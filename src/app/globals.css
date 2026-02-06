@@ -1,1 +1,27 @@
 @import "tailwindcss";
+
+@theme {
+  /* Azlab Blue - Base: #202b52 */
+  --color-azlab-blue-50: #eef0f6;
+  --color-azlab-blue-100: #d4dae8;
+  --color-azlab-blue-200: #a9b5d1;
+  --color-azlab-blue-300: #7e90ba;
+  --color-azlab-blue-400: #4f5d86;
+  --color-azlab-blue-500: #202b52;
+  --color-azlab-blue-600: #1a234a;
+  --color-azlab-blue-700: #141b3b;
+  --color-azlab-blue-800: #0e132c;
+  --color-azlab-blue-900: #070a16;
+
+  /* Azlab Green - Base: #2AA737 */
+  --color-azlab-green-50: #edf9ef;
+  --color-azlab-green-100: #d3f0d7;
+  --color-azlab-green-200: #a7e1af;
+  --color-azlab-green-300: #7bd287;
+  --color-azlab-green-400: #53bc5f;
+  --color-azlab-green-500: #2aa737;
+  --color-azlab-green-600: #22892d;
+  --color-azlab-green-700: #1a6722;
+  --color-azlab-green-800: #124517;
+  --color-azlab-green-900: #09220b;
+}
