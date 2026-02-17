@@ -25,3 +25,19 @@
   --color-azlab-green-800: #124517;
   --color-azlab-green-900: #09220b;
 }
+
+@utility font-rockin {
+  font-family: var(--font-rockin-record), system-ui, sans-serif;
+}
+
+/* globals.css */
+@layer utilities {
+  .icon-filled {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+}
+
+span.size-20 {
+  font-size: 20px;
+  font-variation-settings: 'OPSZ' 20;
+}

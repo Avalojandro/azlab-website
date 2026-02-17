@@ -55,20 +55,20 @@ export default function PopularExams() {
         {/* Section Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            <h2 className="text-3xl font-bold text-azlab-blue-900 mb-2">
               Exámenes populares
             </h2>
-            <p className="text-gray-600">
+            <p className="text-azlab-blue-600">
               Los más solicitados por nuestros pacientes
             </p>
           </div>
           <Link
             href="/examenes"
-            className="text-azlab-blue-500 hover:text-azlab-blue-600 font-semibold flex items-center gap-1 transition-colors"
+            className="group text-azlab-blue-500 hover:text-azlab-blue-600 font-semibold flex items-center gap-1 transition-colors"
           >
             Ver todos
             <svg
-              className="w-4 h-4"
+              className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -88,23 +88,25 @@ export default function PopularExams() {
           {exams.map((exam) => (
             <div
               key={exam.id}
-              className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-xl transition-shadow duration-300 flex flex-col"
+              className="bg-white border border-azlab-blue-200 rounded-xl p-6 hover:shadow-xl transition-shadow duration-300 flex flex-col"
             >
               {/* Header */}
               <div className="mb-4">
                 <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-semibold text-gray-900 text-lg flex-1">
+                  <h3 className="font-semibold text-azlab-blue-900 text-lg flex-1">
                     {exam.name}
                   </h3>
                   <span className="text-xs text-azlab-green-600 bg-azlab-green-50 px-2 py-1 rounded-full whitespace-nowrap ml-2">
                     {exam.badge}
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 mb-3">{exam.description}</p>
+                <p className="text-sm text-azlab-blue-600 mb-3">
+                  {exam.description}
+                </p>
               </div>
 
               {/* Duration */}
-              <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+              <div className="flex items-center gap-2 text-sm text-azlab-blue-500 mb-4">
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -122,32 +124,22 @@ export default function PopularExams() {
               </div>
 
               {/* Footer */}
-              <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-100">
+              <div className="mt-auto flex items-center justify-between pt-4 border-t border-azlab-blue-100">
                 <div>
-                  <p className="text-xs text-gray-500">Precio</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-xs text-azlab-blue-500">Precio</p>
+                  <p className="text-2xl font-bold text-azlab-blue-900">
                     {exam.price}
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                    <svg
-                      className="w-5 h-5 text-gray-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                      />
-                    </svg>
+                  <button className="p-2 hover:bg-azlab-blue-50 rounded-lg transition-colors">
+                    <span className="material-symbols-outlined text-azlab-green-600">
+                      shopping_cart
+                    </span>
                   </button>
                   <Link
                     href={`/examenes/${exam.id}`}
-                    className="text-teal-600 hover:text-teal-700 font-semibold flex items-center gap-1 transition-colors"
+                    className="text-azlab-green-600 hover:text-azlab-green-700 font-semibold flex items-center gap-1 transition-colors"
                   >
                     Ver
                     <svg

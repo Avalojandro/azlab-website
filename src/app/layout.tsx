@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
+const rockinRecord = localFont({
+  src: "./fonts/gomarice_rockin_record.ttf",
+  variable: "--font-rockin-record",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "AzLab - Laboratorio Clínico",
@@ -24,10 +31,11 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.className} bg-gray-50 from-gray-50 to-gray-100 min-h-screen`}
+        className={`${inter.className} ${rockinRecord.variable} bg-azlab-blue-50/20 min-h-screen`}
       >
         <Navbar />
         <main>{children}</main>
+        <Footer />
       </body>
     </html>
   );
