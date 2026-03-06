@@ -1,47 +1,79 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const navLinks = [
+  { href: "/", label: "Inicio" },
+  { href: "/examenes", label: "Exámenes" },
+  { href: "/a-domicilio", label: "A Domicilio" },
+  { href: "/contacto", label: "Contacto" },
+];
 
 export default function Navbar() {
+  const pathname = usePathname();
+
   return (
-    <nav className="bg-white border-b border-azlab-blue-100 shadow-sm sticky top-0 z-50">
+    <nav className="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center">
-              <span className="text-3xl text-azlab-blue-500 bg-clip-text font-rockin">
-                AZ
-              </span>
-              <span className="text-3xl text-azlab-green-500 bg-clip-text font-rockin">
-                Lab
-              </span>
-            </Link>
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link href="/" className="flex items-center shrink-0">
+            <span className="text-3xl text-azlab-blue-500 font-rockin">AZ</span>
+            <span className="text-3xl text-azlab-green-500 font-rockin">
+              Lab
+            </span>
+          </Link>
+
+          {/* Nav links - centered */}
+          <div className="hidden sm:flex items-center gap-1">
+            {navLinks.map(({ href, label }) => {
+              const isActive = pathname === href;
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 ${
+                    isActive
+                      ? "bg-azlab-green-500 text-white"
+                      : "text-gray-500 hover:text-azlab-green-600 hover:bg-azlab-green-50"
+                  }`}
+                >
+                  {label}
+                </Link>
+              );
+            })}
           </div>
-          <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-8">
-            <Link
-              href="/"
-              className="px-3 py-2 rounded-md text-sm font-medium text-azlab-blue-700 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-200"
-            >
-              Inicio
-            </Link>
-            <Link
-              href="/examenes"
-              className="px-3 py-2 rounded-md text-sm font-medium text-azlab-blue-700 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-200"
-            >
-              Examenes
-            </Link>
-            <Link
-              href="/contacto"
-              className="px-3 py-2 rounded-md text-sm font-medium text-azlab-blue-700 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-200"
-            >
-              Contacto
-            </Link>
-          </div>
-          <div className="flex items-center sm:hidden">
-            {/* Mobile menu button placeholder - can be implemented fully later */}
+
+          {/* Right side: cart + CTA */}
+          <div className="hidden sm:flex items-center gap-3">
+            {/* Cart icon */}
             <button
               type="button"
-              className="inline-flex items-center justify-center p-2 rounded-md text-azlab-blue-400 hover:text-azlab-blue-500 hover:bg-azlab-blue-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+              className="p-2 text-gray-500 hover:text-azlab-green-600 transition-colors duration-200"
+              aria-label="Carrito"
             >
-              <span className="sr-only">Open main menu</span>
+              <span className="material-symbols-outlined text-azlab-blue-500">
+                shopping_cart
+              </span>
+            </button>
+
+            {/* CTA Button */}
+            <Link
+              href="/a-domicilio"
+              className="flex items-center gap-2 bg-azlab-green-500 hover:bg-azlab-green-600 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors duration-200"
+            >
+              Agendar a domicilio
+            </Link>
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="flex items-center sm:hidden">
+            <button
+              type="button"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-azlab-green-500 hover:bg-gray-50 focus:outline-none"
+            >
+              <span className="sr-only">Abrir menú</span>
               <svg
                 className="block h-6 w-6"
                 xmlns="http://www.w3.org/2000/svg"
