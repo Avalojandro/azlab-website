@@ -1,12 +1,12 @@
 const ContactCta: React.FC = () => {
   return (
-    <section className="py-16 bg-gradient-to-br from-azlab-green-500 to-azlab-blue-500">
+    <section className="py-16 bg-linear-to-br from-azlab-green-500 to-azlab-blue-500">
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           {/* Left Column - Content */}
           <div>
             <h2 className="text-3xl md:text-3xl font-bold text-white mb-4">
-              ¿Listo para agendar tu examen?
+              ¿Listo para agendar tu exámen?
             </h2>
             <p className="text-white/90  mb-6">
               Contáctanos ahora y un asesor te ayudará con tu cita a domicilio o
@@ -17,7 +17,7 @@ const ContactCta: React.FC = () => {
               {/* Phone */}
               <div className="flex items-center gap-3 text-white">
                 <span className="material-symbols-outlined">call</span>
-                <span className="font-medium">+503 1234-5678</span>
+                <span className="font-medium">+503 6956-5468</span>
               </div>
 
               {/* Email */}
@@ -37,7 +37,7 @@ const ContactCta: React.FC = () => {
           {/* Right Column - Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 md:justify-end">
             <a
-              href="https://wa.me/50370000000"
+              href="https://wa.me/50369565468"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-white text-azlab-green-600 font-semibold rounded-lg hover:bg-gray-50 transition-colors"

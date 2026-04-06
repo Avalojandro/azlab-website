@@ -133,7 +133,7 @@ const Footer: React.FC = () => {
                 <span className="material-symbols-outlined text-azlab-green-500 text-lg">
                   call
                 </span>
-                <span>+503 7000-0000</span>
+                <span>+503 6956-5468</span>
               </li>
               <li className="flex items-start gap-2 text-sm text-gray-600">
                 <span className="material-symbols-outlined text-azlab-green-500 text-lg">

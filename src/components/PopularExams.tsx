@@ -56,11 +56,11 @@ export default function PopularExams() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h2 className="text-3xl font-bold text-azlab-blue-900 mb-2">
-              Exámenes populares
+              Exámenes y perfiles más solicitados
             </h2>
-            <p className="text-azlab-blue-600">
+            {/* <p className="text-azlab-blue-600">
               Los más solicitados por nuestros pacientes
-            </p>
+            </p> */}
           </div>
           <Link
             href="/examenes"
@@ -131,10 +131,10 @@ export default function PopularExams() {
                     {exam.price}
                   </p>
                 </div>
-                <div className="flex gap-2">
-                  <button className="p-2 hover:bg-azlab-blue-50 rounded-lg transition-colors">
-                    <span className="material-symbols-outlined text-azlab-green-600">
-                      shopping_cart
+                <div className="flex items-center gap-x-2">
+                  <button className="px-2 hover:bg-azlab-blue-50 rounded-lg transition-colors cursor-pointer">
+                    <span className="material-symbols-outlined text-azlab-green-600 pt-2">
+                      add
                     </span>
                   </button>
                   <Link

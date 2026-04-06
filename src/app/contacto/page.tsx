@@ -30,7 +30,7 @@ export default function ContactoPage() {
               <div>
                 <p className="text-sm text-gray-500 mb-1">Teléfono</p>
                 <p className="font-semibold text-azlab-blue-500">
-                  +503 1234-5678
+                  +503 6956-5468
                 </p>
               </div>
             </div>
@@ -89,7 +89,7 @@ export default function ContactoPage() {
 
           {/* WhatsApp Button */}
           <a
-            href="https://wa.me/50312345678"
+            href="https://wa.me/50369565468"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-azlab-green-500 text-white font-semibold rounded-lg hover:bg-azlab-green-600 transition-colors"

@@ -23,8 +23,8 @@ export default function Hero() {
 
           {/* Description */}
           <p className="text-azlab-blue-600 text-lg mb-8 max-w-2xl">
-            Profesionales certificados van a tu hogar. Resultados digitales en
-            24-48 horas, sin filas y sin esperas.
+            Manejaremos la entrega de resultados con resultados desde el mismo
+            día hasta las 48 horas en pruebas más especializadas.
           </p>
 
           {/* CTA Buttons */}
