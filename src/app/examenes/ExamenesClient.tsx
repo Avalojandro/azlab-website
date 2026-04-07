@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 interface Product {
@@ -76,6 +75,109 @@ const handleCategoryIcon = (category: string) => {
   }
 };
 
+// ─── Product Detail Modal ────────────────────────────────────────────────────
+function ProductModal({
+  product,
+  onClose,
+}: {
+  product: Product;
+  onClose: () => void;
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+
+      {/* Panel */}
+      <div
+        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-modal-in"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Top accent bar
+        <div className="h-1.5 w-full bg-gradient-to-r from-azlab-blue-500 to-azlab-green-500" /> */}
+        {/* Header */}
+        <div className="flex items-start justify-between px-6 pt-5 pb-4">
+          <div>
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-azlab-green-700 bg-azlab-green-50 px-2.5 py-1 rounded-full mb-3">
+              <span className="material-symbols-outlined text-base leading-none">
+                {handleCategoryIcon(product.category)}
+              </span>
+              {product.category}
+            </span>
+            <h2 className="text-xl font-bold text-azlab-blue-900 leading-snug">
+              {product.name}
+            </h2>
+          </div>
+          <button
+            onClick={onClose}
+            className="shrink-0 pt-1.5 px-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+            aria-label="Cerrar"
+          >
+            <span className="material-symbols-outlined text-gray-500">
+              close
+            </span>
+          </button>
+        </div>
+        {/* Divider */}
+        <div className="mx-6 border-t border-gray-100" />
+        {/* Body */}
+        <div className="px-6 py-5 space-y-5">
+          {/* Price */}
+          <div className="flex items-end gap-2">
+            <span className="text-4xl font-extrabold text-azlab-blue-900">
+              ${product.price.toFixed(2)}
+            </span>
+            <span className="text-sm text-gray-400 mb-1">
+              {product.currency ?? "USD"}
+            </span>
+          </div>
+
+          {/* Description */}
+          {product.description && (
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1.5">
+                Información
+              </p>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                {product.description}
+              </p>
+            </div>
+          )}
+        </div>
+        {/* Footer actions */}
+        <div className="px-6 pb-6 flex gap-3">
+          <button
+            onClick={onClose}
+            className="flex-1 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors cursor-pointer"
+          >
+            Cerrar
+          </button>
+          <button className="flex-1 py-2.5 rounded-lg bg-azlab-blue-500 text-white font-semibold hover:bg-azlab-blue-600 transition-colors cursor-pointer flex items-center justify-center gap-2">
+            <span className="material-symbols-outlined text-base leading-none">
+              call
+            </span>
+            Agendar cita
+          </button>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes modal-in {
+          from { opacity: 0; transform: scale(0.95) translateY(8px); }
+          to   { opacity: 1; transform: scale(1)    translateY(0);   }
+        }
+        .animate-modal-in {
+          animation: modal-in 0.2s ease-out both;
+        }
+      `}</style>
+    </div>
+  );
+}
+
+// ─── Main Component ──────────────────────────────────────────────────────────
 export default function ExamenesClient({
   products,
   currentPage,
@@ -93,12 +195,11 @@ export default function ExamenesClient({
 
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("Todos");
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  // Use fixed category list; keep only those that have products (except "Todos"),
-  // but always show all defined categories so the UI is complete.
   const productCategories = new Set(products.map((p) => p.category));
   const categories = ALL_CATEGORIES.filter(
-    (c) => c === "Todos" || productCategories.has(c) || true
+    (c) => c === "Todos" || productCategories.has(c) || true,
   );
 
   const filteredProducts = products.filter((product) => {
@@ -169,20 +270,14 @@ export default function ExamenesClient({
           >
             {/* Header */}
             <div className="mb-4">
-              <div className="flex items-start justify-betweefn mb-2">
+              <div className="flex items-start justify-between mb-2">
                 <h3 className="font-semibold text-azlab-blue-900 text-lg flex-1">
                   {product.name}
                 </h3>
-                {/* <span className="text-xs text-azlab-green-600 bg-azlab-green-50 px-2 py-1 rounded-full whitespace-nowrap ml-2">
-                  A Domicilio
-                </span> */}
               </div>
               <p className="text-sm text-azlab-blue-400 font-medium mb-1">
                 {product.category}
               </p>
-              {/* <p className="text-sm text-azlab-blue-600 mb-3">
-                {product.description}
-              </p> */}
             </div>
 
             {/* Footer */}
@@ -193,15 +288,21 @@ export default function ExamenesClient({
                   ${product.price.toFixed(2)}
                 </p>
               </div>
-              <div className="flex gap-2">
-                <button className="p-2 hover:bg-azlab-blue-50 rounded-lg transition-colors">
-                  <span className="material-symbols-outlined text-azlab-green-600">
-                    shopping_cart
+              <div className="flex items-center gap-x-2">
+                {/* Add button */}
+                <button
+                  onClick={() => setSelectedProduct(product)}
+                  className="px-2 hover:bg-azlab-blue-50 rounded-lg transition-colors cursor-pointer"
+                  title="Ver detalles"
+                >
+                  <span className="material-symbols-outlined text-azlab-green-600 pt-2">
+                    add
                   </span>
                 </button>
-                <Link
-                  href={`/examenes/${product.id}`}
-                  className="text-azlab-green-600 hover:text-azlab-green-700 font-semibold flex items-center gap-1 transition-colors"
+                {/* Ver button */}
+                <button
+                  onClick={() => setSelectedProduct(product)}
+                  className="text-azlab-green-600 hover:text-azlab-green-700 font-semibold flex items-center gap-1 transition-colors cursor-pointer"
                 >
                   Ver
                   <svg
@@ -217,7 +318,7 @@ export default function ExamenesClient({
                       d="M9 5l7 7-7 7"
                     />
                   </svg>
-                </Link>
+                </button>
               </div>
             </div>
           </div>
@@ -245,36 +346,6 @@ export default function ExamenesClient({
             Anterior
           </button>
 
-          {/* {[...Array(totalPages)].map((_, i) => {
-            const pageStr = i + 1;
-            // Simple logic to show a few surrounding pages
-            if (
-              pageStr === 1 ||
-              pageStr === totalPages ||
-              (pageStr >= currentPage - 1 && pageStr <= currentPage + 1)
-            ) {
-              return (
-                <button
-                  key={pageStr}
-                  onClick={() => handlePageChange(pageStr)}
-                  className={`w-10 h-10 rounded-lg font-medium transition-colors ${
-                    currentPage === pageStr
-                      ? "bg-azlab-blue-500 text-white shadow-md"
-                      : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  {pageStr}
-                </button>
-              );
-            } else if (
-              pageStr === currentPage - 2 ||
-              pageStr === currentPage + 2
-            ) {
-              return <span key={pageStr} className="px-2 text-gray-500">...</span>;
-            }
-            return null;
-          })} */}
-
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage >= totalPages}
@@ -284,6 +355,14 @@ export default function ExamenesClient({
             <span className="material-symbols-outlined">arrow_forward</span>
           </button>
         </div>
+      )}
+
+      {/* Product Detail Modal */}
+      {selectedProduct && (
+        <ProductModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
       )}
     </div>
   );

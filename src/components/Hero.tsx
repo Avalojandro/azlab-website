@@ -42,7 +42,7 @@ export default function Hero() {
               href="/contacto"
               className="bg-white hover:bg-azlab-blue-500 text-azlab-blue-600 hover:text-white font-semibold px-8 py-3 rounded-lg border-2 border-azlab-blue-600 transition-all duration-200 text-center"
             >
-              Agendar cita
+              Contáctanos
             </Link>
           </div>
 
