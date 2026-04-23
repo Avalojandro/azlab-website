@@ -3,9 +3,7 @@ import Link from "next/link";
 interface Exam {
   id: string;
   name: string;
-  badge: string;
-  description: string;
-  duration: string;
+  category: string;
   price: string;
 }
 
@@ -13,37 +11,25 @@ const exams: Exam[] = [
   {
     id: "1",
     name: "Glucosa en Ayunas",
-    badge: "A Domicilio",
-    description:
-      "Mide los niveles de azúcar en sangre para detectar diabetes o prediabetes.",
-    duration: "Resultados: 24 horas",
+    category: "Química Sanguínea",
     price: "$8.00",
   },
   {
     id: "2",
     name: "Hemograma Completo",
-    badge: "A Domicilio",
-    description:
-      "Evaluación completa de célula sanguíneas: glóbulos rojos, blancos y plaquetas.",
-    duration: "Resultados: 24 horas",
+    category: "Hematología",
     price: "$12.00",
   },
   {
     id: "3",
     name: "Perfil Lipídico",
-    badge: "A Domicilio",
-    description:
-      "Mide colesterol total, HDL, LDL y triglicéridos para evaluar el riesgo cardiovascular.",
-    duration: "Resultados: 24 horas",
+    category: "Química Sanguínea",
     price: "$25.00",
   },
   {
     id: "4",
     name: "Examen General de Orina",
-    badge: "A Domicilio",
-    description:
-      "Análisis completo de orina para detectar infecciones, diabetes y problemas renales.",
-    duration: "Resultados: 24 horas",
+    category: "Ureanálisis",
     price: "$6.00",
   },
 ];
@@ -58,9 +44,6 @@ export default function PopularExams() {
             <h2 className="text-3xl font-bold text-azlab-blue-900 mb-2">
               Exámenes y perfiles más solicitados
             </h2>
-            {/* <p className="text-azlab-blue-600">
-              Los más solicitados por nuestros pacientes
-            </p> */}
           </div>
           <Link
             href="/examenes"
@@ -96,31 +79,10 @@ export default function PopularExams() {
                   <h3 className="font-semibold text-azlab-blue-900 text-lg flex-1">
                     {exam.name}
                   </h3>
-                  <span className="text-xs text-azlab-green-600 bg-azlab-green-50 px-2 py-1 rounded-full whitespace-nowrap ml-2">
-                    {exam.badge}
-                  </span>
                 </div>
-                <p className="text-sm text-azlab-blue-600 mb-3">
-                  {exam.description}
+                <p className="text-sm text-azlab-blue-400 font-medium mb-1">
+                  {exam.category}
                 </p>
-              </div>
-
-              {/* Duration */}
-              <div className="flex items-center gap-2 text-sm text-azlab-blue-500 mb-4">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <span>{exam.duration}</span>
               </div>
 
               {/* Footer */}
@@ -132,29 +94,20 @@ export default function PopularExams() {
                   </p>
                 </div>
                 <div className="flex items-center gap-x-2">
-                  <button className="px-2 hover:bg-azlab-blue-50 rounded-lg transition-colors cursor-pointer">
+                  {/* Add button (commented to match ExamenesClient) */}
+                  {/* <button className="px-2 hover:bg-azlab-blue-50 rounded-lg transition-colors cursor-pointer">
                     <span className="material-symbols-outlined text-azlab-green-600 pt-2">
                       add
                     </span>
-                  </button>
+                  </button> */}
                   <Link
                     href={`/examenes/${exam.id}`}
-                    className="text-azlab-green-600 hover:text-azlab-green-700 font-semibold flex items-center gap-1 transition-colors"
+                    className="text-azlab-green-600 hover:text-azlab-green-700 font-semibold flex items-center gap-1 transition-colors cursor-pointer"
                   >
-                    Ver
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
+                    <span className="text-sm">Detalles</span>
+                    <span className="material-symbols-outlined text-azlab-green-600">
+                      arrow_outward
+                    </span>
                   </Link>
                 </div>
               </div>

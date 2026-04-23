@@ -290,7 +290,7 @@ export default function ExamenesClient({
               </div>
               <div className="flex items-center gap-x-2">
                 {/* Add button */}
-                <button
+                {/* <button
                   onClick={() => setSelectedProduct(product)}
                   className="px-2 hover:bg-azlab-blue-50 rounded-lg transition-colors cursor-pointer"
                   title="Ver detalles"
@@ -298,26 +298,16 @@ export default function ExamenesClient({
                   <span className="material-symbols-outlined text-azlab-green-600 pt-2">
                     add
                   </span>
-                </button>
+                </button> */}
                 {/* Ver button */}
                 <button
                   onClick={() => setSelectedProduct(product)}
                   className="text-azlab-green-600 hover:text-azlab-green-700 font-semibold flex items-center gap-1 transition-colors cursor-pointer"
                 >
-                  Ver
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
+                  <span className="text-sm">Detalles</span>
+                  <span className="material-symbols-outlined text-azlab-green-600">
+                    arrow_outward
+                  </span>
                 </button>
               </div>
             </div>
