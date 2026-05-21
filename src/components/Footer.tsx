@@ -139,7 +139,10 @@ const Footer: React.FC = () => {
                 <span className="material-symbols-outlined text-azlab-green-500 text-lg">
                   mail
                 </span>
-                <span>info@azlabhealthcare.com</span>
+                <span>
+                  {/* info@azlabhealthcare.com */}
+                  avalojandro@gmail.com
+                </span>
               </li>
               <li className="flex items-start gap-2 text-sm text-gray-600">
                 <span className="material-symbols-outlined text-azlab-green-500 text-lg">

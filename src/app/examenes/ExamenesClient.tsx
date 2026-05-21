@@ -2,17 +2,8 @@
 
 import { useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-
-interface Product {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  price: number;
-  currency: string;
-  code: string;
-  active: boolean;
-}
+import { useCart } from "@/context/CartContext";
+import type { Product } from "@/types/product";
 
 interface Props {
   products: Product[];
@@ -83,6 +74,14 @@ function ProductModal({
   product: Product;
   onClose: () => void;
 }) {
+  const { addToCart } = useCart();
+  const [qty, setQty] = useState(1);
+
+  const handleAdd = () => {
+    addToCart(product, qty);
+    onClose();
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -96,8 +95,6 @@ function ProductModal({
         className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-modal-in"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Top accent bar
-        <div className="h-1.5 w-full bg-gradient-to-r from-azlab-blue-500 to-azlab-green-500" /> */}
         {/* Header */}
         <div className="flex items-start justify-between px-6 pt-5 pb-4">
           <div>
@@ -121,8 +118,10 @@ function ProductModal({
             </span>
           </button>
         </div>
+
         {/* Divider */}
         <div className="mx-6 border-t border-gray-100" />
+
         {/* Body */}
         <div className="px-6 py-5 space-y-5">
           {/* Price */}
@@ -146,7 +145,41 @@ function ProductModal({
               </p>
             </div>
           )}
+
+          {/* Quantity picker */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">
+              Cantidad
+            </p>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setQty((q) => Math.max(1, q - 1))}
+                disabled={qty <= 1}
+                className="w-9 h-9 rounded-lg border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                aria-label="Disminuir cantidad"
+              >
+                <span className="material-symbols-outlined text-base leading-none">
+                  remove
+                </span>
+              </button>
+              <span className="w-8 text-center text-lg font-bold text-azlab-blue-900">
+                {qty}
+              </span>
+              <button
+                onClick={() => setQty((q) => Math.min(5, q + 1))}
+                disabled={qty >= 5}
+                className="w-9 h-9 rounded-lg border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                aria-label="Aumentar cantidad"
+              >
+                <span className="material-symbols-outlined text-base leading-none">
+                  add
+                </span>
+              </button>
+              <span className="text-xs text-gray-400 ml-1">máx. 5</span>
+            </div>
+          </div>
         </div>
+
         {/* Footer actions */}
         <div className="px-6 pb-6 flex gap-3">
           <button
@@ -155,11 +188,14 @@ function ProductModal({
           >
             Cerrar
           </button>
-          <button className="flex-1 py-2.5 rounded-lg bg-azlab-blue-500 text-white font-semibold hover:bg-azlab-blue-600 transition-colors cursor-pointer flex items-center justify-center gap-2">
+          <button
+            onClick={handleAdd}
+            className="flex-1 py-2.5 rounded-lg bg-azlab-green-500 text-white font-semibold hover:bg-azlab-green-600 transition-colors cursor-pointer flex items-center justify-center gap-2"
+          >
             <span className="material-symbols-outlined text-base leading-none">
-              call
+              add_shopping_cart
             </span>
-            Agendar cita
+            Agregar al carrito
           </button>
         </div>
       </div>

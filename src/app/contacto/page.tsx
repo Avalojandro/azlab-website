@@ -1,3 +1,10 @@
+import ContactForm from "@/components/ContactForm";
+
+export const metadata = {
+  title: "Contacto | AZ Lab",
+  description: "Ponte en contacto con AZ Lab para agendar exámenes de laboratorio a domicilio o resolver tus dudas. Estamos para servirte.",
+};
+
 export default function ContactoPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -47,7 +54,8 @@ export default function ContactoPage() {
               <div>
                 <p className="text-sm text-gray-500 mb-1">Correo</p>
                 <p className="font-semibold text-azlab-blue-500">
-                  info@azlabhealthcare.com
+                  {/* info@azlabhealthcare.com */}
+                  avalojandro@gmail.com
                 </p>
               </div>
             </div>
@@ -89,7 +97,8 @@ export default function ContactoPage() {
 
           {/* WhatsApp Button */}
           <a
-            href="https://wa.me/50369565468"
+            // Original number: 50369565468
+            href="https://wa.me/50375791475"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-azlab-green-500 text-white font-semibold rounded-lg hover:bg-azlab-green-600 transition-colors"
@@ -110,64 +119,7 @@ export default function ContactoPage() {
         </div>
 
         {/* Contact Form */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-          <h2 className="text-2xl font-bold text-azlab-blue-900 mb-6">
-            Envíanos un mensaje
-          </h2>
-          <form className="space-y-6">
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-azlab-blue-900"
-              >
-                Nombre
-              </label>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-azlab-green-500 focus:ring-azlab-green-500 h-10 px-3 bg-white"
-                placeholder="Tu nombre completo"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-azlab-blue-900"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-azlab-green-500 focus:ring-azlab-green-500 h-10 px-3 bg-white"
-                placeholder="tu@email.com"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="message"
-                className="block text-sm font-medium text-azlab-blue-900"
-              >
-                Mensaje
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                rows={4}
-                className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-azlab-green-500 focus:ring-azlab-green-500 p-3 bg-white"
-                placeholder="¿En qué podemos ayudarte?"
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-azlab-blue-500 hover:bg-azlab-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-azlab-green-500 transition-colors"
-            >
-              Enviar Mensaje
-            </button>
-          </form>
-        </div>
+        <ContactForm />
       </div>
     </div>
   );

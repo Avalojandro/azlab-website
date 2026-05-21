@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { CartProvider } from "@/context/CartContext";
 import { getProducts } from "../../services/api";
 // 1. Importamos la función de la API
 
@@ -44,11 +45,13 @@ export default async function RootLayout({
       <body
         className={`${inter.className} ${rockinRecord.variable} bg-azlab-blue-50/20 min-h-screen`}
       >
-        <Navbar />
-        {/* Los datos están disponibles aquí si quisieras pasarlos por context, 
-            aunque usualmente se piden en las páginas específicas */}
-        <main>{children}</main>
-        <Footer />
+        <CartProvider>
+          <Navbar />
+          {/* Los datos están disponibles aquí si quisieras pasarlos por context,
+              aunque usualmente se piden en las páginas específicas */}
+          <main>{children}</main>
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );
