@@ -6,21 +6,17 @@ export default function ContactForm() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     message: "",
   });
 
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [errors, setErrors] = useState<{ name?: string; message?: string }>({});
 
   const validate = () => {
     const newErrors: typeof errors = {};
     if (!formData.name.trim()) {
       newErrors.name = "El nombre es requerido";
-    }
-    if (!formData.email.trim()) {
-      newErrors.email = "El correo es requerido";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "El correo no es válido";
     }
     if (!formData.message.trim()) {
       newErrors.message = "El mensaje no puede estar vacío";
@@ -29,10 +25,14 @@ export default function ContactForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error for this field when user starts typing
+    // Filter non-digit characters if phone field
+    const processedValue = name === "phone" ? value.replace(/\D/g, "") : value;
+
+    setFormData((prev) => ({ ...prev, [name]: processedValue }));
     if (errors[name as keyof typeof errors]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
@@ -42,20 +42,34 @@ export default function ContactForm() {
     e.preventDefault();
     if (!validate()) return;
 
-    setStatus("loading");
-
     try {
-      const subject = `Contacto AZ Lab - ${formData.name}`;
-      const body = `Nombre: ${formData.name}\nCorreo de contacto: ${formData.email}\n\nMensaje:\n${formData.message}`;
-      const mailtoUrl = `mailto:avalojandro@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      
-      // Open default mail client
-      window.location.href = mailtoUrl;
+      const whatsappNumber = "50375791475"; // Contacto AZ LAB
+
+      const messageParts = [
+        "*CONSULTA DESDE LA WEB - AZ LAB*",
+        "",
+        `*Nombre:* ${formData.name}`,
+      ];
+
+      if (formData.phone.trim()) {
+        messageParts.push(`*Teléfono:* ${formData.phone}`);
+      }
+
+      if (formData.email.trim()) {
+        messageParts.push(`*Correo:* ${formData.email}`);
+      }
+
+      messageParts.push("", "*Mensaje:*", formData.message);
+
+      const message = messageParts.join("\n");
+      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+
+      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 
       setStatus("success");
-      setFormData({ name: "", email: "", message: "" });
+      setFormData({ name: "", email: "", phone: "", message: "" });
     } catch (err) {
-      console.error("Error al abrir el cliente de correo:", err);
+      console.error("Error al abrir WhatsApp:", err);
       setStatus("error");
     }
   };
@@ -69,14 +83,15 @@ export default function ContactForm() {
           </span>
         </div>
         <h2 className="text-3xl font-bold text-azlab-blue-900 mb-3">
-          ¡Mensaje Enviado!
+          ¡Listo para enviar!
         </h2>
         <p className="text-gray-600 max-w-sm mb-8 leading-relaxed">
-          Gracias por escribirnos. Tu mensaje ha sido enviado correctamente y te responderemos a <span className="font-semibold text-azlab-blue-500">avalojandro@gmail.com</span> lo antes posible.
+          Se ha abierto una nueva ventana de WhatsApp con tu mensaje listo para
+          ser enviado a nuestro equipo.
         </p>
         <button
           onClick={() => setStatus("idle")}
-          className="px-6 py-2.5 bg-azlab-blue-500 text-white font-semibold rounded-full hover:bg-azlab-green-600 transition-colors shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-azlab-green-500"
+          className="px-6 py-2.5 bg-azlab-blue-500 text-white font-semibold rounded-full hover:bg-azlab-green-600 transition-colors shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-azlab-green-500 cursor-pointer"
         >
           Enviar otro mensaje
         </button>
@@ -87,22 +102,25 @@ export default function ContactForm() {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
       <h2 className="text-2xl font-bold text-azlab-blue-900 mb-6">
-        Envíanos un mensaje
+        Envíanos un mensaje por WhatsApp
       </h2>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form noValidate onSubmit={handleSubmit} className="space-y-6">
         {status === "error" && (
           <div className="p-4 bg-red-50 border border-red-100 rounded-lg text-red-700 text-sm flex items-center gap-2">
-            <span className="material-symbols-outlined text-red-500 text-lg">error</span>
-            Hubo un error al enviar el mensaje. Por favor intenta de nuevo.
+            <span className="material-symbols-outlined text-red-500 text-lg">
+              error
+            </span>
+            Hubo un error al abrir WhatsApp. Por favor intenta de nuevo.
           </div>
         )}
 
+        {/* Nombre */}
         <div>
           <label
             htmlFor="name"
             className="block text-sm font-semibold text-azlab-blue-900"
           >
-            Nombre
+            Nombre completo <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -112,23 +130,42 @@ export default function ContactForm() {
             onChange={handleChange}
             className={`mt-1 block w-full rounded-md border shadow-sm h-10 px-3 bg-white transition-colors focus:outline-none focus:ring-2 ${
               errors.name
-                ? "border-red-300 focus:border-red-500 focus:ring-red-500"
+                ? "border-red-400 bg-red-50/20 focus:border-red-500 focus:ring-red-500"
                 : "border-gray-300 focus:border-azlab-green-500 focus:ring-azlab-green-500"
             }`}
             placeholder="Tu nombre completo"
-            disabled={status === "loading"}
           />
           {errors.name && (
             <p className="mt-1 text-xs text-red-500">{errors.name}</p>
           )}
         </div>
 
+        {/* Teléfono */}
+        <div>
+          <label
+            htmlFor="phone"
+            className="block text-sm font-semibold text-azlab-blue-900"
+          >
+            Teléfono (opcional)
+          </label>
+          <input
+            type="tel"
+            name="phone"
+            id="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm h-10 px-3 bg-white transition-colors focus:outline-none focus:ring-2 focus:border-azlab-green-500 focus:ring-azlab-green-500"
+            placeholder="Ej. 71234567"
+          />
+        </div>
+
+        {/* Email */}
         <div>
           <label
             htmlFor="email"
             className="block text-sm font-semibold text-azlab-blue-900"
           >
-            Email
+            Correo electrónico (opcional)
           </label>
           <input
             type="email"
@@ -136,25 +173,18 @@ export default function ContactForm() {
             id="email"
             value={formData.email}
             onChange={handleChange}
-            className={`mt-1 block w-full rounded-md border shadow-sm h-10 px-3 bg-white transition-colors focus:outline-none focus:ring-2 ${
-              errors.email
-                ? "border-red-300 focus:border-red-500 focus:ring-red-500"
-                : "border-gray-300 focus:border-azlab-green-500 focus:ring-azlab-green-500"
-            }`}
+            className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm h-10 px-3 bg-white transition-colors focus:outline-none focus:ring-2 focus:border-azlab-green-500 focus:ring-azlab-green-500"
             placeholder="tu@email.com"
-            disabled={status === "loading"}
           />
-          {errors.email && (
-            <p className="mt-1 text-xs text-red-500">{errors.email}</p>
-          )}
         </div>
 
+        {/* Mensaje */}
         <div>
           <label
             htmlFor="message"
             className="block text-sm font-semibold text-azlab-blue-900"
           >
-            Mensaje
+            Mensaje o consulta <span className="text-red-500">*</span>
           </label>
           <textarea
             id="message"
@@ -164,11 +194,10 @@ export default function ContactForm() {
             onChange={handleChange}
             className={`mt-1 block w-full rounded-md border shadow-sm p-3 bg-white transition-colors focus:outline-none focus:ring-2 ${
               errors.message
-                ? "border-red-300 focus:border-red-500 focus:ring-red-500"
+                ? "border-red-400 bg-red-50/20 focus:border-red-500 focus:ring-red-500"
                 : "border-gray-300 focus:border-azlab-green-500 focus:ring-azlab-green-500"
             }`}
-            placeholder="¿En qué podemos ayudarte?"
-            disabled={status === "loading"}
+            placeholder="Escribe aquí tus dudas o consultas..."
           />
           {errors.message && (
             <p className="mt-1 text-xs text-red-500">{errors.message}</p>
@@ -177,36 +206,19 @@ export default function ContactForm() {
 
         <button
           type="submit"
-          disabled={status === "loading"}
-          className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-transparent rounded-md shadow-md text-sm font-medium text-white bg-azlab-blue-500 hover:bg-azlab-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-azlab-green-500 transition-colors disabled:opacity-75 disabled:cursor-not-allowed hover:shadow-lg"
+          className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-transparent rounded-md shadow-md text-base font-semibold text-white bg-azlab-green-500 hover:bg-azlab-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-azlab-green-500 transition-colors cursor-pointer hover:shadow-lg"
         >
-          {status === "loading" ? (
-            <>
-              <svg
-                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                />
-              </svg>
-              Enviando...
-            </>
-          ) : (
-            "Enviar Mensaje"
-          )}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            fill="currentColor"
+            className="bi bi-whatsapp shrink-0"
+            viewBox="0 0 16 16"
+          >
+            <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232" />
+          </svg>
+          Enviar por WhatsApp
         </button>
       </form>
     </div>

@@ -8,21 +8,37 @@ export default async function ExamenesPage({
 }) {
   const resolvedParams = await searchParams;
   const pageParam = resolvedParams.page;
+  const categoryParam = resolvedParams.category;
+  const cursorParam = resolvedParams.cursor;
+
   const currentPage =
     typeof pageParam === "string" ? parseInt(pageParam, 10) : 1;
   const validPage = isNaN(currentPage) || currentPage < 1 ? 1 : currentPage;
 
+  let activeCategory = "Todos";
+  if (typeof categoryParam === "string") {
+    try {
+      activeCategory = decodeURIComponent(categoryParam.replace(/\+/g, " "));
+    } catch {
+      activeCategory = categoryParam;
+    }
+  }
+  const activeCursor = typeof cursorParam === "string" ? cursorParam : undefined;
+
   const limit = 16;
-  const response = await getProducts(validPage, limit);
+  const response = await getProducts(validPage, limit, activeCategory, activeCursor);
   const products = response?.data || response?.products || [];
+
+  const hasMore = response?.pagination?.hasMore || false;
+  const nextCursor = response?.pagination?.nextCursor || null;
 
   // Calculamos el total de páginas. Si la API no retorna el campo 'total',
   // asumimos que hay página siguiente si obtuvimos el número exacto de elementos del 'limit'
   const computedTotal =
     typeof response?.total === "number"
       ? response.total
-      : products.length === limit
-        ? validPage * limit + limit
+      : hasMore
+        ? (validPage + 1) * limit
         : validPage * limit;
   const totalPages = Math.max(1, Math.ceil(computedTotal / limit));
 
@@ -31,6 +47,9 @@ export default async function ExamenesPage({
       products={products}
       currentPage={validPage}
       totalPages={totalPages}
+      activeCategory={activeCategory}
+      hasMore={hasMore}
+      nextCursor={nextCursor}
     />
   );
 }

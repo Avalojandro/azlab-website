@@ -1,4 +1,3 @@
-// lib/api.ts
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 /**
@@ -6,11 +5,25 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
  * @param page Número de página
  * @param limit Cantidad de productos por página
  */
-export async function getProducts(page = 1, limit = 20, category?: string) {
+export async function getProducts(page = 1, limit = 20, category?: string, cursor?: string, search?: string) {
   try {
-    let url = `${API_BASE_URL}/products?page=${page}&limit=${limit}`;
+    let url = `${API_BASE_URL}/products?limit=${limit}`;
+    
+    if (search) {
+      url += `&search=${encodeURIComponent(search)}`;
+    }
+    
     if (category && category !== "Todos") {
       url += `&category=${encodeURIComponent(category)}`;
+      if (cursor) {
+        url += `&cursor=${encodeURIComponent(cursor)}`;
+      }
+    } else {
+      if (cursor) {
+        url += `&cursor=${encodeURIComponent(cursor)}`;
+      } else {
+        url += `&page=${page}`;
+      }
     }
 
     const response = await fetch(url, {
@@ -25,7 +38,7 @@ export async function getProducts(page = 1, limit = 20, category?: string) {
     return await response.json();
   } catch (error) {
     console.error("Error fetching products:", error);
-    return { products: [], total: 0 }; // Retorno seguro para evitar que la app truene
+    return { ok: false, data: [], products: [], pagination: { limit, page, hasMore: false, nextCursor: null } };
   }
 }
 
@@ -44,3 +57,5 @@ export async function getProductById(id: string) {
     return null;
   }
 }
+
+

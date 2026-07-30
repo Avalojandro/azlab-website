@@ -64,7 +64,7 @@ const ContactCta: React.FC = () => {
               href="/examenes"
               className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-azlab-green-500 text-white font-semibold rounded-lg hover:bg-azlab-green-700 transition-colors"
             >
-              Agendar cita
+              Ver exámenes
               <span className="material-symbols-outlined">arrow_forward</span>
             </a>
           </div>

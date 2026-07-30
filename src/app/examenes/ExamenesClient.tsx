@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import type { Product } from "@/types/product";
@@ -9,7 +9,20 @@ interface Props {
   products: Product[];
   currentPage: number;
   totalPages: number;
+  activeCategory: string;
+  hasMore: boolean;
+  nextCursor: string | null;
 }
+
+const normalizeCategoryName = (value: string | null | undefined): string => {
+  if (!value) return "";
+  return value
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+};
 
 const ALL_CATEGORIES = [
   "Todos",
@@ -218,32 +231,99 @@ export default function ExamenesClient({
   products,
   currentPage,
   totalPages,
+  activeCategory: activeCategoryProp,
+  hasMore,
+  nextCursor,
 }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const handlePageChange = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", page.toString());
+  const [searchQuery, setSearchQuery] = useState("");
+  const [apiSearchResults, setApiSearchResults] = useState<Product[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setApiSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    const delayDebounceFn = setTimeout(async () => {
+      try {
+        const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "/api";
+        let url = `${apiBaseUrl}/products?limit=20&search=${encodeURIComponent(searchQuery)}`;
+        
+        if (activeCategoryProp !== "Todos") {
+          url += `&category=${encodeURIComponent(activeCategoryProp)}`;
+        }
+
+        const res = await fetch(url);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.ok && json.data) {
+            setApiSearchResults(json.data);
+          }
+        }
+      } catch (error) {
+        console.error("Error searching products from API:", error);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery, activeCategoryProp]);
+
+  const handleCategoryChange = (category: string) => {
+    const params = new URLSearchParams();
+    if (category !== "Todos") {
+      params.set("category", category);
+    }
+    params.set("page", "1");
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("Todos");
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", page.toString());
+    params.delete("cursor");
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
+  const handleNextPage = () => {
+    if (activeCategoryProp !== "Todos") {
+      if (nextCursor) {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("cursor", nextCursor);
+        params.delete("page");
+        router.push(`${pathname}?${params.toString()}`);
+      }
+    } else {
+      handlePageChange(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (activeCategoryProp !== "Todos") {
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("cursor");
+      params.delete("page");
+      router.push(`${pathname}?${params.toString()}`);
+    } else {
+      handlePageChange(currentPage - 1);
+    }
+  };
 
   const productCategories = new Set(products.map((p) => p.category));
   const categories = ALL_CATEGORIES.filter(
     (c) => c === "Todos" || productCategories.has(c) || true,
   );
 
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch =
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesSearch;
-  });
+  const displayProducts = searchQuery.trim() !== "" ? apiSearchResults : products;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -267,8 +347,13 @@ export default function ExamenesClient({
             placeholder="Buscar exámenes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-azlab-green-500 focus:border-transparent"
+            className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-azlab-green-500 focus:border-transparent"
           />
+          {isSearching && (
+            <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-azlab-green-600 animate-spin">
+              autorenew
+            </span>
+          )}
         </div>
       </div>
 
@@ -277,9 +362,10 @@ export default function ExamenesClient({
         {categories.map((category) => (
           <button
             key={category}
-            onClick={() => setActiveCategory(category)}
+            onClick={() => handleCategoryChange(category)}
             className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 cursor-pointer ${
-              activeCategory === category
+              normalizeCategoryName(activeCategoryProp) ===
+              normalizeCategoryName(category)
                 ? "bg-azlab-blue-500 text-white"
                 : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
             }`}
@@ -293,13 +379,13 @@ export default function ExamenesClient({
       </div>
 
       {/* Results Count */}
-      <p className="text-sm text-gray-500 mb-6">
-        {filteredProducts.length} exámenes encontrados
-      </p>
+      {/* <p className="text-sm text-gray-500 mb-6">
+        {displayProducts.length} exámenes encontrados
+      </p> */}
 
       {/* Product Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {filteredProducts.map((product) => (
+        {displayProducts.map((product) => (
           <div
             key={product.id}
             className="bg-white border border-azlab-blue-200 rounded-xl p-6 hover:shadow-xl transition-shadow duration-300 flex flex-col"
@@ -307,7 +393,7 @@ export default function ExamenesClient({
             {/* Header */}
             <div className="mb-4">
               <div className="flex items-start justify-between mb-2">
-                <h3 className="font-semibold text-azlab-blue-900 text-lg flex-1">
+                <h3 className="font-semibold text-azlab-blue-900 text-lg flex-1 line-clamp-2 break-words">
                   {product.name}
                 </h3>
               </div>
@@ -352,7 +438,7 @@ export default function ExamenesClient({
       </div>
 
       {/* No Results */}
-      {filteredProducts.length === 0 && (
+      {displayProducts.length === 0 && (
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg">
             No se encontraron exámenes que coincidan con tu búsqueda.
@@ -361,27 +447,38 @@ export default function ExamenesClient({
       )}
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-2 mt-12">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage <= 1}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <span className="material-symbols-outlined">arrow_back</span>
-            Anterior
-          </button>
+      {searchQuery.trim() === "" &&
+        (activeCategoryProp === "Todos"
+          ? totalPages > 1
+          : hasMore || searchParams.has("cursor")) && (
+          <div className="flex justify-center items-center gap-2 mt-12">
+            <button
+              onClick={handlePrevPage}
+              disabled={
+                activeCategoryProp === "Todos"
+                  ? currentPage <= 1
+                  : !searchParams.has("cursor")
+              }
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <span className="material-symbols-outlined">arrow_back</span>
+              Anterior
+            </button>
 
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage >= totalPages}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            Siguiente
-            <span className="material-symbols-outlined">arrow_forward</span>
-          </button>
-        </div>
-      )}
+            <button
+              onClick={handleNextPage}
+              disabled={
+                activeCategoryProp === "Todos"
+                  ? currentPage >= totalPages
+                  : !hasMore
+              }
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Siguiente
+              <span className="material-symbols-outlined">arrow_forward</span>
+            </button>
+          </div>
+        )}
 
       {/* Product Detail Modal */}
       {selectedProduct && (
