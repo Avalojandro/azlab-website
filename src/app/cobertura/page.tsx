@@ -112,13 +112,6 @@ export default function CoberturaPage() {
                             {loc.distrito}
                           </p>
                           <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
-                            <span className="font-semibold text-azlab-blue-800 flex items-center gap-1">
-                              <span className="material-symbols-outlined text-xs text-azlab-green-600">
-                                payments
-                              </span>
-                              ${loc.fee.toFixed(2)}
-                            </span>
-                            <span>•</span>
                             <span className="flex items-center gap-1">
                               <span className="material-symbols-outlined text-xs text-azlab-blue-400">
                                 schedule

@@ -11,11 +11,39 @@ import {
   calculateDeliveryFee,
 } from "@/data/locations";
 
+function generateOrderCode(): string {
+  const randomNumbers = Math.floor(10000 + Math.random() * 90000);
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const numLetters = Math.random() < 0.5 ? 1 : 2;
+  let letterPart = "";
+  for (let i = 0; i < numLetters; i++) {
+    letterPart += letters.charAt(Math.floor(Math.random() * letters.length));
+  }
+  return `AZ-${randomNumbers}${letterPart}`;
+}
+
 export default function AgendarCitaPage() {
   const router = useRouter();
   const { items, clearCart } = useCart();
   const [step, setStep] = useState<1 | 2>(1);
   const [orderSent, setOrderSent] = useState(false);
+  const [orderCode, setOrderCode] = useState<string>("");
+  const [copied, setCopied] = useState(false);
+
+  React.useEffect(() => {
+    setOrderCode(generateOrderCode());
+  }, []);
+
+  const handleCopyOrderCode = async () => {
+    if (!orderCode) return;
+    try {
+      await navigator.clipboard.writeText(orderCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Error al copiar el código:", err);
+    }
+  };
 
   // Form state
   const [formData, setFormData] = useState({
@@ -109,6 +137,7 @@ export default function AgendarCitaPage() {
       : `$${deliveryFee.toFixed(2)}`;
 
     const message = `*SOLICITUD DE ORDEN - AZLAB*
+*Nº de Orden:* ${orderCode}
 
 *Datos del Paciente:*
 • *Nombre:* ${formData.fullName}
@@ -170,7 +199,7 @@ ${examenesList}
   }
 
   return (
-    <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Header and Step Indicator */}
       <div className="mb-10 text-center">
         <h1 className="text-4xl font-bold text-azlab-blue-900 mb-6">
@@ -585,11 +614,42 @@ ${examenesList}
 
           {/* Pricing Box & Pay Button */}
           <div className="lg:col-span-5 bg-white border border-azlab-blue-100 rounded-3xl p-6 md:p-8 shadow-sm flex flex-col">
-            <h2 className="text-xl font-bold text-azlab-blue-900 mb-6">
+            <h2 className="text-xl font-bold text-azlab-blue-900 mb-6 pb-4 border-b border-gray-100">
               Detalle de Facturación
             </h2>
 
             <div className="space-y-4 mb-6">
+              <div className="flex justify-between items-center text-sm bg-azlab-blue-50/50 p-2.5 rounded-xl border border-azlab-blue-100/60">
+                <span className="text-azlab-blue-700 font-medium">
+                  Código de Orden
+                </span>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono font-bold text-azlab-blue-900 text-base tracking-wide bg-white px-2.5 py-0.5 rounded-lg border border-azlab-blue-200 shadow-2xs">
+                    {orderCode}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleCopyOrderCode}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-azlab-blue-600 hover:text-azlab-blue-800 bg-white hover:bg-azlab-blue-50 border border-azlab-blue-200 px-2 py-1 rounded-lg transition-colors cursor-pointer"
+                    title="Copiar código de orden"
+                  >
+                    <span className="material-symbols-outlined text-sm">
+                      {copied ? "check" : "content_copy"}
+                    </span>
+                    <span>{copied ? "¡Copiado!" : "Copiar"}</span>
+                  </button>
+                </div>
+              </div>
+
+              <p className="text-xs text-amber-800 bg-amber-50/80 border border-amber-200/70 p-2.5 rounded-xl flex items-start gap-2 leading-relaxed">
+                <span className="material-symbols-outlined text-base text-amber-600 shrink-0 mt-0.5">
+                  info
+                </span>
+                <span>
+                  Este número de orden es válido únicamente hasta el momento de
+                  solicitar el pedido por WhatsApp.
+                </span>
+              </p>
               <div className="flex justify-between text-sm text-gray-500">
                 <span>Subtotal exámenes</span>
                 <span className="font-semibold text-azlab-blue-900">
