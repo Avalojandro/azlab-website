@@ -4,9 +4,9 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-50 border-t border-gray-200">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
           {/* Brand Section */}
-          <div className="col-span-1 md:col-span-1">
+          <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
               <Link href="/" className="flex items-center">
                 <span className="text-3xl text-azlab-blue-500 bg-clip-text font-rockin">
@@ -17,7 +17,7 @@ const Footer: React.FC = () => {
                 </span>
               </Link>
             </div>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-gray-600 mb-4 max-w-sm">
               Laboratorio clínico con servicio a domicilio en Santa Ana, El
               Salvador. Resultados confiables, atención profesional.
             </p>
@@ -46,7 +46,7 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Enlaces Rápidos */}
-          <div>
+          <div className="md:col-span-1">
             <h4 className="font-semibold text-azlab-blue-900 mb-4">
               Enlaces Rápidos
             </h4>
@@ -78,49 +78,8 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Servicios */}
-          <div>
-            <h4 className="font-semibold text-azlab-blue-900 mb-4">
-              Servicios
-            </h4>
-            <ul className="space-y-2">
-              <li>
-                <Link
-                  href="/examenes"
-                  className="text-sm text-gray-600 hover:text-azlab-green-500 transition-colors"
-                >
-                  Química Sanguínea
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/examenes"
-                  className="text-sm text-gray-600 hover:text-azlab-green-500 transition-colors"
-                >
-                  Hematología
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/examenes"
-                  className="text-sm text-gray-600 hover:text-azlab-green-500 transition-colors"
-                >
-                  Ureanálisis
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/examenes"
-                  className="text-sm text-gray-600 hover:text-azlab-green-500 transition-colors"
-                >
-                  Perfiles y Paquetes
-                </Link>
-              </li>
-            </ul>
-          </div>
-
           {/* Contacto */}
-          <div>
+          <div className="md:col-span-2">
             <h4 className="font-semibold text-azlab-blue-900 mb-4">Contacto</h4>
             <ul className="space-y-3">
               <li className="flex items-start gap-2 text-sm text-gray-600">
@@ -161,16 +120,10 @@ const Footer: React.FC = () => {
           </p>
           <div className="flex gap-6">
             <Link
-              href="/privacidad"
+              href="/politicas#privacidad"
               className="text-sm text-gray-500 hover:text-azlab-green-500 transition-colors"
             >
-              Privacidad
-            </Link>
-            <Link
-              href="/terminos"
-              className="text-sm text-gray-500 hover:text-azlab-green-500 transition-colors"
-            >
-              Términos
+              Políticas y Privacidad
             </Link>
           </div>
         </div>

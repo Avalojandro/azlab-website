@@ -1,40 +1,13 @@
 import React from "react";
 import Link from "next/link";
 import ContactCta from "@/components/ContactCta";
+import { JURISDICCIONES, DELIVERY_LOCATIONS } from "@/data/locations";
 
-const REGIONS = [
-  {
-    name: "Santa Ana Centro",
-    municipalities: [{ name: "Santa Ana", code: "02201" }],
-  },
-  {
-    name: "Santa Ana Oeste",
-    municipalities: [
-      { name: "Candelaria de la Frontera", code: "02203" },
-      { name: "Chalchuapa", code: "02205" },
-      { name: "El Porvenir", code: "02208" },
-      { name: "San Antonio Pajonal", code: "02212" },
-      { name: "San Sebastián Salitrillo", code: "02215" },
-      { name: "Santiago de la Frontera", code: "02217" },
-    ],
-  },
-  {
-    name: "Santa Ana Este",
-    municipalities: [
-      { name: "Coatepeque", code: "02204" },
-      { name: "El Congo", code: "02207" },
-    ],
-  },
-  {
-    name: "Santa Ana Norte",
-    municipalities: [
-      { name: "Masahuat", code: "02210" },
-      { name: "Metapán", code: "02211" },
-      { name: "Santa Rosa Guachipilín", code: "02216" },
-      { name: "Texistepeque", code: "02218" },
-    ],
-  },
-];
+export const metadata = {
+  title: "Cobertura | AZ Lab",
+  description:
+    "Consulta las zonas, jurisdicciones y distritos con servicio de laboratorio clínico a domicilio en Santa Ana y Occidente.",
+};
 
 export default function CoberturaPage() {
   return (
@@ -59,7 +32,8 @@ export default function CoberturaPage() {
             Nuestra <span className="text-azlab-green-500">Cobertura</span>
           </h1>
           <p className="mt-4 text-lg md:text-xl leading-8 text-azlab-blue-600 max-w-2xl mx-auto mb-4">
-            Revisa nuestro listado de municipios disponibles en Santa Ana.
+            Revisa nuestras jurisdicciones, distritos, tarifas y tiempos de
+            traslado estimados para el servicio a domicilio.
           </p>
         </div>
       </section>
@@ -69,51 +43,96 @@ export default function CoberturaPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-azlab-blue-900 mb-4">
-              Zonas de Cobertura en Santa Ana
+              Jurisdicciones y Distritos de Cobertura
             </h2>
             <p className="text-azlab-blue-600 max-w-2xl mx-auto">
-              Revisa si tu municipio se encuentra dentro de nuestra área de
-              servicio a domicilio.
+              Revisa si tu zona o distrito se encuentra dentro de nuestra área
+              de servicio a domicilio.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-            {REGIONS.map((region) => (
-              <div
-                key={region.name}
-                className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group relative overflow-hidden"
-              >
-                {/* Decorative background element */}
-                <div className="absolute top-0 right-0 w-24 h-24 bg-azlab-blue-50 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-110" />
+          <div className="space-y-6">
+            {JURISDICCIONES.map((jur) => {
+              const districts = DELIVERY_LOCATIONS.filter(
+                (l) => l.jurisdiccion === jur,
+              );
+              const hasFreePromo = districts.some((d) => d.freeThreshold);
 
-                <div className="w-14 h-14 bg-azlab-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:-translate-y-1 transition-transform duration-300">
-                  <span className="material-symbols-outlined text-azlab-blue-500 text-2xl">
-                    location_city
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-azlab-blue-900 mb-6">
-                  {region.name}
-                </h3>
+              return (
+                <div
+                  key={jur}
+                  className="bg-white rounded-3xl p-6 md:p-8 border border-azlab-blue-100/80 shadow-sm hover:shadow-lg transition-all duration-300 relative overflow-hidden group"
+                >
+                  {/* Decorative background element */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-azlab-blue-50/50 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-110" />
 
-                <ul className="flex flex-col gap-4">
-                  {region.municipalities.map((muni) => (
-                    <li key={muni.name} className="flex items-start gap-3">
-                      <span className="material-symbols-outlined text-azlab-green-500 text-xl shrink-0 mt-0.5">
-                        check_circle
-                      </span>
-                      <div>
-                        <p className="text-gray-700 font-medium leading-tight mt-1">
-                          {muni.name}
-                        </p>
-                        {/* <p className="text-azlab-blue-400 text-sm mt-0.5">
-                          C.P.: {muni.code}
-                        </p> */}
+                  {/* Card Header: Icon, Jurisdiction Name, Count, and Promo Badge */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-gray-100 gap-4 mb-6">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-azlab-blue-50 rounded-2xl flex items-center justify-center shrink-0 group-hover:-translate-y-0.5 transition-transform duration-300">
+                        <span className="material-symbols-outlined text-azlab-blue-500 text-2xl">
+                          location_city
+                        </span>
                       </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+                      <div>
+                        <h3 className="text-xl font-bold text-azlab-blue-900">
+                          {jur}
+                        </h3>
+                        <p className="text-xs text-gray-500 mt-0.5 font-medium">
+                          {districts.length}{" "}
+                          {districts.length === 1
+                            ? "distrito disponible"
+                            : "distritos disponibles"}
+                        </p>
+                      </div>
+                    </div>
+
+                    {hasFreePromo && (
+                      <span className="self-start sm:self-auto bg-azlab-green-50 text-azlab-green-700 text-xs font-semibold px-3.5 py-2 rounded-xl border border-azlab-green-200 flex items-center gap-1.5 shadow-2xs">
+                        <span className="material-symbols-outlined text-base text-azlab-green-500">
+                          local_shipping
+                        </span>
+                        Servicio a domicilio GRATIS en compras mayores a $35.00
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Horizontal grid of district cards inside the jurisdiction */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
+                    {districts.map((loc) => (
+                      <div
+                        key={loc.id}
+                        className="flex items-center gap-3 p-3 rounded-2xl bg-gray-50/80 border border-gray-100 hover:border-azlab-blue-200 hover:bg-azlab-blue-50/40 transition-all duration-200"
+                      >
+                        <span className="material-symbols-outlined text-azlab-green-500 text-xl shrink-0">
+                          check_circle
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-gray-900 font-semibold text-sm truncate">
+                            {loc.distrito}
+                          </p>
+                          <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
+                            <span className="font-semibold text-azlab-blue-800 flex items-center gap-1">
+                              <span className="material-symbols-outlined text-xs text-azlab-green-600">
+                                payments
+                              </span>
+                              ${loc.fee.toFixed(2)}
+                            </span>
+                            <span>•</span>
+                            <span className="flex items-center gap-1">
+                              <span className="material-symbols-outlined text-xs text-azlab-blue-400">
+                                schedule
+                              </span>
+                              ~{loc.approxTimeMin} min
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
           {/* Not Found CTA */}
@@ -126,11 +145,11 @@ export default function CoberturaPage() {
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-azlab-blue-900 mb-2">
-                  ¿No encuentras tu zona?
+                  ¿No encuentras tu distrito?
                 </h3>
                 <p className="text-azlab-blue-600">
-                  Es posible que si podamos cubrir tu área o hacer una
-                  excepción. Contáctanos directamente para confirmarlo.
+                  Es posible que si podamos cubrir tu área o hacer una excepción
+                  en zonas aledañas. Contáctanos directamente para confirmarlo.
                 </p>
               </div>
             </div>

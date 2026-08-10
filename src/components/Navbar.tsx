@@ -10,7 +10,7 @@ const navLinks = [
   { href: "/a-domicilio", label: "A Domicilio" },
   { href: "/examenes", label: "Exámenes" },
   { href: "/contacto", label: "Contacto" },
-  { href: "/politicas", label: "Politicas" },
+  { href: "/politicas", label: "Políticas" },
 ];
 
 export default function Navbar() {

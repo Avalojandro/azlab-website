@@ -4,21 +4,12 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
-
-const MUNICIPIOS = [
-  "Santa Ana (Zona Urbana)",
-  "Chalchuapa",
-  "Coatepeque",
-  "Metapán",
-  "San Sebastián Salitrillo",
-  "El Congo",
-  "Texistepeque",
-  "Candelaria de la Frontera",
-  "Santa Rosa Guachipilín",
-  "Santiago de la Frontera",
-  "San Antonio Pajonal",
-  "Masahuat",
-];
+import {
+  DELIVERY_LOCATIONS,
+  JURISDICCIONES,
+  getDistrictById,
+  calculateDeliveryFee,
+} from "@/data/locations";
 
 export default function AgendarCitaPage() {
   const router = useRouter();
@@ -30,7 +21,7 @@ export default function AgendarCitaPage() {
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
-    city: "Santa Ana (Zona Urbana)",
+    districtId: "sa-centro-santa-ana-centro",
     street: "",
     instructions: "",
   });
@@ -38,24 +29,27 @@ export default function AgendarCitaPage() {
   const [formErrors, setFormErrors] = useState<{
     fullName?: string;
     phone?: string;
-    city?: string;
+    districtId?: string;
     street?: string;
   }>({});
 
-  // Calculate order subtotal
+  // Subtotal calculation
   const subtotal = items.reduce(
     (sum, { product, quantity }) => sum + product.price * quantity,
     0,
   );
 
-  const deliveryFee = 2.0; // Home collection fee
+  // Dynamic location and delivery fee calculations
+  const selectedDistrict = getDistrictById(formData.districtId);
+  const deliveryCalc = calculateDeliveryFee(selectedDistrict, subtotal);
+  const deliveryFee = deliveryCalc.fee;
   const total = subtotal + deliveryFee;
 
   const validateForm = () => {
     const errors: {
       fullName?: string;
       phone?: string;
-      city?: string;
+      districtId?: string;
       street?: string;
     } = {};
 
@@ -69,8 +63,8 @@ export default function AgendarCitaPage() {
       errors.phone = "El número de teléfono debe tener al menos 8 dígitos.";
     }
 
-    if (!formData.city.trim()) {
-      errors.city = "Por favor, selecciona un municipio.";
+    if (!formData.districtId) {
+      errors.districtId = "Por favor, selecciona tu municipio/distrito.";
     }
 
     if (!formData.street.trim()) {
@@ -104,27 +98,41 @@ export default function AgendarCitaPage() {
     const examenesList = items
       .map(
         ({ product, quantity }) =>
-          `• *${product.name}* (x${quantity}) - $${(product.price * quantity).toFixed(2)}`,
+          `• *${product.name}* (x${quantity}) - $${(
+            product.price * quantity
+          ).toFixed(2)}`,
       )
       .join("\n");
+
+    const deliveryDetailText = deliveryCalc.isFree
+      ? "GRATIS (Aplica promoción desde $35.00 en Santa Ana Centro)"
+      : `$${deliveryFee.toFixed(2)}`;
 
     const message = `*SOLICITUD DE ORDEN - AZLAB*
 
 *Datos del Paciente:*
 • *Nombre:* ${formData.fullName}
 • *Teléfono:* ${formData.phone}
-• *Municipio:* ${formData.city}
-• *Dirección:* ${formData.street}${formData.instructions ? `\n• *Indicaciones:* ${formData.instructions}` : ""}
+• *Jurisdicción:* ${selectedDistrict.jurisdiccion}
+• *Distrito:* ${selectedDistrict.distrito}
+• *Tiempo Aprox. de Traslado:* ~${selectedDistrict.approxTimeMin} min
+• *Dirección:* ${formData.street}${
+      formData.instructions
+        ? `\n• *Indicaciones:* ${formData.instructions}`
+        : ""
+    }
 
 *Exámenes Solicitados:*
 ${examenesList}
 
 *Resumen de Pago:*
 • Subtotal: $${subtotal.toFixed(2)}
-• Servicio a Domicilio: $${deliveryFee.toFixed(2)}
+• Servicio a Domicilio: ${deliveryDetailText}
 • *TOTAL ESTIMADO:* $${total.toFixed(2)}`;
 
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+      message,
+    )}`;
     window.open(whatsappUrl, "_blank", "noopener,noreferrer");
     setOrderSent(true);
   };
@@ -306,43 +314,121 @@ ${examenesList}
               )}
             </div>
 
-            {/* Municipio (Dropdown) */}
+            {/* Ubicación: Jurisdicción y Distrito */}
             <div>
               <label
-                htmlFor="city"
+                htmlFor="districtId"
                 className="block text-sm font-semibold text-azlab-blue-950 mb-1"
               >
-                Municipio <span className="text-red-500">*</span>
+                Jurisdicción / Distrito <span className="text-red-500">*</span>
               </label>
               <select
-                name="city"
-                id="city"
-                value={formData.city}
+                name="districtId"
+                id="districtId"
+                value={formData.districtId}
                 onChange={(e) => {
-                  setFormData({ ...formData, city: e.target.value });
-                  if (formErrors.city)
-                    setFormErrors((prev) => ({ ...prev, city: undefined }));
+                  setFormData({ ...formData, districtId: e.target.value });
+                  if (formErrors.districtId)
+                    setFormErrors((prev) => ({
+                      ...prev,
+                      districtId: undefined,
+                    }));
                 }}
                 className={`block w-full rounded-xl border px-3.5 py-2.5 text-sm transition-colors focus:outline-none focus:ring-2 ${
-                  formErrors.city
+                  formErrors.districtId
                     ? "border-red-400 bg-red-50/20 focus:border-red-500 focus:ring-red-500"
                     : "border-gray-300 bg-white focus:border-azlab-blue-500 focus:ring-azlab-blue-500"
                 }`}
               >
-                {MUNICIPIOS.map((muni) => (
-                  <option key={muni} value={muni}>
-                    {muni}
-                  </option>
-                ))}
+                {JURISDICCIONES.map((jur) => {
+                  const locs = DELIVERY_LOCATIONS.filter(
+                    (l) => l.jurisdiccion === jur,
+                  );
+                  return (
+                    <optgroup key={jur} label={jur}>
+                      {locs.map((loc) => (
+                        <option key={loc.id} value={loc.id}>
+                          {loc.distrito} (Tarifa: ${loc.fee.toFixed(2)})
+                        </option>
+                      ))}
+                    </optgroup>
+                  );
+                })}
               </select>
-              {formErrors.city && (
+              {formErrors.districtId && (
                 <p className="mt-1.5 text-xs font-medium text-red-500 flex items-center gap-1">
                   <span className="material-symbols-outlined text-sm leading-none">
                     error
                   </span>
-                  {formErrors.city}
+                  {formErrors.districtId}
                 </p>
               )}
+
+              {/* District summary info box */}
+              <div className="mt-3 bg-azlab-blue-50/70 rounded-2xl p-3.5 border border-azlab-blue-100 text-xs text-azlab-blue-950 space-y-1.5">
+                <div className="flex justify-between items-center font-medium">
+                  <span className="flex items-center gap-1.5 text-azlab-blue-900">
+                    <span className="material-symbols-outlined text-azlab-blue-500 text-base">
+                      schedule
+                    </span>
+                    Tiempo aprox. de traslado:
+                  </span>
+                  <span className="font-bold text-azlab-blue-950">
+                    ~{selectedDistrict.approxTimeMin} min
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center font-medium">
+                  <span className="flex items-center gap-1.5 text-azlab-blue-900">
+                    <span className="material-symbols-outlined text-azlab-blue-500 text-base">
+                      local_shipping
+                    </span>
+                    Tarifa de servicio AZLAB:
+                  </span>
+                  <span className="font-bold text-azlab-blue-950">
+                    {deliveryCalc.isFree ? (
+                      <span className="text-azlab-green-600 font-extrabold flex items-center gap-1">
+                        <span className="line-through text-gray-400 text-xs font-normal">
+                          ${selectedDistrict.fee.toFixed(2)}
+                        </span>{" "}
+                        GRATIS
+                      </span>
+                    ) : (
+                      `$${deliveryFee.toFixed(2)}`
+                    )}
+                  </span>
+                </div>
+
+                {/* Free delivery promo notification for Santa Ana Centro */}
+                {selectedDistrict.freeThreshold && (
+                  <div className="pt-2 border-t border-azlab-blue-100">
+                    {deliveryCalc.isFree ? (
+                      <p className="text-azlab-green-700 font-semibold flex items-center gap-1">
+                        <span className="material-symbols-outlined text-sm text-azlab-green-500">
+                          verified
+                        </span>
+                        Aplica servicio a domicilio GRATIS en Santa Ana Centro
+                        por compras mayores a $35.00.
+                      </p>
+                    ) : (
+                      <p className="text-azlab-blue-800 flex items-center gap-1">
+                        <span className="material-symbols-outlined text-sm text-azlab-blue-500">
+                          info
+                        </span>
+                        En Santa Ana Centro el servicio es GRATIS a partir de
+                        $35.00 en exámenes. (Te faltan $
+                        {deliveryCalc.remainingForFree?.toFixed(2)})
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {!selectedDistrict.freeThreshold && (
+                  <p className="pt-1 text-gray-500 italic text-[11px]">
+                    No aplica servicio gratis para esta ubicación.
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Dirección exacta */}
@@ -473,7 +559,18 @@ ${examenesList}
                     location_on
                   </span>
                   <div>
-                    <p className="font-semibold">{formData.city}</p>
+                    <p className="font-semibold text-azlab-blue-900">
+                      {selectedDistrict.distrito}{" "}
+                      <span className="font-normal text-xs text-gray-500">
+                        ({selectedDistrict.jurisdiccion})
+                      </span>
+                    </p>
+                    <p className="text-xs text-gray-500 mb-1 flex items-center gap-1">
+                      <span className="material-symbols-outlined text-xs">
+                        schedule
+                      </span>
+                      Tiempo aprox: ~{selectedDistrict.approxTimeMin} min
+                    </p>
                     <p className="text-gray-700">{formData.street}</p>
                     {formData.instructions && (
                       <p className="text-xs text-gray-500 mt-1 italic">
@@ -500,9 +597,18 @@ ${examenesList}
                 </span>
               </div>
               <div className="flex justify-between text-sm text-gray-500">
-                <span>Servicio a domicilio</span>
+                <span>Servicio a domicilio ({selectedDistrict.distrito})</span>
                 <span className="font-semibold text-azlab-blue-900">
-                  ${deliveryFee.toFixed(2)}
+                  {deliveryCalc.isFree ? (
+                    <span className="text-azlab-green-600 font-bold flex items-center gap-1">
+                      <span className="line-through text-gray-400 font-normal text-xs">
+                        ${selectedDistrict.fee.toFixed(2)}
+                      </span>{" "}
+                      GRATIS
+                    </span>
+                  ) : (
+                    `$${deliveryFee.toFixed(2)}`
+                  )}
                 </span>
               </div>
 
