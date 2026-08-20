@@ -10,6 +10,7 @@ interface Props {
   currentPage: number;
   totalPages: number;
   activeCategory: string;
+  activeSearch: string;
   hasMore: boolean;
   nextCursor: string | null;
 }
@@ -232,6 +233,7 @@ export default function ExamenesClient({
   currentPage,
   totalPages,
   activeCategory: activeCategoryProp,
+  activeSearch: activeSearchProp = "",
   hasMore,
   nextCursor,
 }: Props) {
@@ -239,51 +241,46 @@ export default function ExamenesClient({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [apiSearchResults, setApiSearchResults] = useState<Product[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(activeSearchProp);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
-    if (searchQuery.trim() === "") {
-      setApiSearchResults([]);
-      setIsSearching(false);
+    setSearchQuery(activeSearchProp);
+  }, [activeSearchProp]);
+
+  useEffect(() => {
+    if (searchQuery.trim() === activeSearchProp.trim()) {
       return;
     }
 
-    setIsSearching(true);
-    const delayDebounceFn = setTimeout(async () => {
-      try {
-        const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "/api";
-        let url = `${apiBaseUrl}/products?limit=20&search=${encodeURIComponent(searchQuery)}`;
-        
-        if (activeCategoryProp !== "Todos") {
-          url += `&category=${encodeURIComponent(activeCategoryProp)}`;
-        }
-
-        const res = await fetch(url);
-        if (res.ok) {
-          const json = await res.json();
-          if (json.ok && json.data) {
-            setApiSearchResults(json.data);
-          }
-        }
-      } catch (error) {
-        console.error("Error searching products from API:", error);
-      } finally {
-        setIsSearching(false);
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams(searchParams.toString());
+      const trimmed = searchQuery.trim();
+      if (trimmed) {
+        params.set("search", trimmed);
+      } else {
+        params.delete("search");
       }
+      params.set("page", "1");
+      params.delete("cursor");
+
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     }, 300);
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery, activeCategoryProp]);
+    return () => clearTimeout(timer);
+  }, [searchQuery, activeSearchProp, pathname, router, searchParams]);
+
+  const isPendingSearch = searchQuery.trim() !== activeSearchProp.trim();
 
   const handleCategoryChange = (category: string) => {
-    const params = new URLSearchParams();
+    const params = new URLSearchParams(searchParams.toString());
     if (category !== "Todos") {
       params.set("category", category);
+    } else {
+      params.delete("category");
     }
     params.set("page", "1");
+    params.delete("cursor");
     router.push(`${pathname}?${params.toString()}`);
   };
 
@@ -323,7 +320,16 @@ export default function ExamenesClient({
     (c) => c === "Todos" || productCategories.has(c) || true,
   );
 
-  const displayProducts = searchQuery.trim() !== "" ? apiSearchResults : products;
+  const displayProducts = products.filter((product) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase().trim();
+    return (
+      product.name.toLowerCase().includes(q) ||
+      (product.description && product.description.toLowerCase().includes(q)) ||
+      product.category.toLowerCase().includes(q) ||
+      (product.code && product.code.toLowerCase().includes(q))
+    );
+  });
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -349,11 +355,28 @@ export default function ExamenesClient({
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-azlab-green-500 focus:border-transparent"
           />
-          {isSearching && (
+          {searchQuery !== "" ? (
+            <button
+              onClick={() => {
+                setSearchQuery("");
+                const params = new URLSearchParams(searchParams.toString());
+                params.delete("search");
+                params.set("page", "1");
+                params.delete("cursor");
+                router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+              }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+              title="Limpiar búsqueda"
+            >
+              <span className="material-symbols-outlined text-xl leading-none">
+                close
+              </span>
+            </button>
+          ) : isPendingSearch ? (
             <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-azlab-green-600 animate-spin">
               autorenew
             </span>
-          )}
+          ) : null}
         </div>
       </div>
 

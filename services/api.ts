@@ -1,18 +1,28 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const DEFAULT_API_URL = "https://us-central1-azlab-9dae3.cloudfunctions.net/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_URL;
 
 /**
  * Obtiene la lista de productos paginada
  * @param page Número de página
  * @param limit Cantidad de productos por página
+ * @param category Categoría opcional
+ * @param cursor Cursor opcional
+ * @param search Término de búsqueda opcional
  */
-export async function getProducts(page = 1, limit = 20, category?: string, cursor?: string, search?: string) {
+export async function getProducts(
+  page = 1,
+  limit = 20,
+  category?: string,
+  cursor?: string,
+  search?: string
+) {
   try {
     let url = `${API_BASE_URL}/products?limit=${limit}`;
-    
-    if (search) {
-      url += `&search=${encodeURIComponent(search)}`;
+
+    if (search && search.trim() !== "") {
+      url += `&search=${encodeURIComponent(search.trim())}`;
     }
-    
+
     if (category && category !== "Todos") {
       url += `&category=${encodeURIComponent(category)}`;
       if (cursor) {

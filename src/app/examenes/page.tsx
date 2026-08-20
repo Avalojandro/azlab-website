@@ -10,6 +10,7 @@ export default async function ExamenesPage({
   const pageParam = resolvedParams.page;
   const categoryParam = resolvedParams.category;
   const cursorParam = resolvedParams.cursor;
+  const searchParam = resolvedParams.search || resolvedParams.q;
 
   const currentPage =
     typeof pageParam === "string" ? parseInt(pageParam, 10) : 1;
@@ -24,9 +25,10 @@ export default async function ExamenesPage({
     }
   }
   const activeCursor = typeof cursorParam === "string" ? cursorParam : undefined;
+  const activeSearch = typeof searchParam === "string" ? searchParam.trim() : undefined;
 
   const limit = 16;
-  const response = await getProducts(validPage, limit, activeCategory, activeCursor);
+  const response = await getProducts(validPage, limit, activeCategory, activeCursor, activeSearch);
   const products = response?.data || response?.products || [];
 
   const hasMore = response?.pagination?.hasMore || false;
@@ -48,6 +50,7 @@ export default async function ExamenesPage({
       currentPage={validPage}
       totalPages={totalPages}
       activeCategory={activeCategory}
+      activeSearch={activeSearch || ""}
       hasMore={hasMore}
       nextCursor={nextCursor}
     />
