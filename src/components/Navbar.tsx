@@ -71,7 +71,7 @@ export default function Navbar() {
             {/* CTA Button */}
             <a
               // Original number: 50369565468
-              href="https://wa.me/50375791475"
+              href="https://wa.me/50369565468"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 bg-azlab-green-500 hover:bg-azlab-green-600 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors duration-200"
@@ -180,7 +180,7 @@ export default function Navbar() {
           {/* CTA mobile */}
           <a
             // Original number: 50369565468
-            href="https://wa.me/50375791475"
+            href="https://wa.me/50369565468"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setMenuOpen(false)}

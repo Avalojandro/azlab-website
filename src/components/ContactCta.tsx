@@ -41,7 +41,7 @@ const ContactCta: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-4 md:justify-end">
             <a
               // Original number: 50369565468
-              href="https://wa.me/50375791475"
+              href="https://wa.me/50369565468"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-white text-azlab-green-600 font-semibold rounded-lg hover:bg-gray-50 transition-colors"

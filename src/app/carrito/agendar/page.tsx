@@ -121,7 +121,7 @@ export default function AgendarCitaPage() {
   };
 
   const handleSendWhatsApp = () => {
-    const whatsappNumber = "50375791475"; // Contacto AZ LAB
+    const whatsappNumber = "50369565468"; // Contacto AZ LAB
 
     const examenesList = items
       .map(

@@ -43,7 +43,7 @@ export default function ContactForm() {
     if (!validate()) return;
 
     try {
-      const whatsappNumber = "50375791475"; // Contacto AZ LAB
+      const whatsappNumber = "50369565468"; // Contacto AZ LAB
 
       const messageParts = [
         "*CONSULTA DESDE LA WEB - AZ LAB*",
