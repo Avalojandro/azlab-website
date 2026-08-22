@@ -100,7 +100,7 @@ const Footer: React.FC = () => {
                 </span>
                 <span>
                   {/* info@azlabhealthcare.com */}
-                  avalojandro@gmail.com
+                  info@azlabhealthcare.com
                 </span>
               </li>
               <li className="flex items-start gap-2 text-sm text-gray-600">
