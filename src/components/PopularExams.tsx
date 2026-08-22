@@ -199,15 +199,15 @@ export default function PopularExams({ products }: Props) {
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-azlab-blue-900 mb-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-azlab-blue-900 mb-1">
               Exámenes y perfiles más solicitados
             </h2>
           </div>
           <Link
             href="/examenes"
-            className="group text-azlab-blue-500 hover:text-azlab-blue-600 font-semibold flex items-center gap-1 transition-colors"
+            className="group text-azlab-blue-500 hover:text-azlab-blue-600 font-semibold flex items-center gap-1 transition-colors shrink-0 whitespace-nowrap"
           >
             Ver todos
             <svg
