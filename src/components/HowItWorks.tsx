@@ -40,7 +40,7 @@ export default function HowItWorks() {
   const features = [
     {
       title: "Profesionales certificados",
-      description: "Personal capacitado con licencia del MINSAL",
+      description: "Personal capacitado con licencia del CSSP.",
       icon: (
         <span className="material-symbols-outlined text-azlab-green-500">
           verified_user
