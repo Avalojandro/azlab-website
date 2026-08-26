@@ -86,7 +86,10 @@ const Footer: React.FC = () => {
                 <span className="material-symbols-outlined text-azlab-green-500 text-lg">
                   location_on
                 </span>
-                <span>Santa Ana, El Salvador</span>
+                <span>
+                  8va Avenida Sur, Entre 23 y 25 Calle Poniente, #2, Santa Ana.
+                  Frente a Quesadillas Maybelline, Santa Ana, El Salvador, 2201
+                </span>
               </li>
               <li className="flex items-start gap-2 text-sm text-gray-600">
                 <span className="material-symbols-outlined text-azlab-green-500 text-lg">
@@ -116,7 +119,8 @@ const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <div className="mt-8 pt-6 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-gray-500">
-            © 2024 AZLAB Healthcare. Todos los derechos reservados.
+            © {new Date().getFullYear()} AZLAB Healthcare. Todos los derechos
+            reservados.
           </p>
           <div className="flex gap-6">
             <Link
