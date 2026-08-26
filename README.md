@@ -1,34 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧪 AZLAB Healthcare — Frontend Web
 
-## Getting Started
+Plataforma web oficial de **AZLAB Healthcare**, laboratorio clínico en Santa Ana, El Salvador. Permite consultar catálogo de exámenes, cotizar servicios, verificar cobertura a domicilio y agendar citas médicas con confirmación vía WhatsApp.
 
-First, run the development server:
+---
 
+## 📖 Documentación Completa
+
+Para una guía técnica detallada de la arquitectura, reglas de negocio, flujos de agendamiento y componentes, consulta el archivo maestro:
+
+👉 **[DOCUMENTACION.md](./DOCUMENTACION.md)**
+
+Otras guías disponibles:
+*   **[LOCAL_SETUP.md](./LOCAL_SETUP.md)**: Guía paso a paso para desarrollo local con los emuladores de Firebase.
+*   **[api-documentation.md](./api-documentation.md)**: Especificación de endpoints y ejemplos de peticiones cURL a la API.
+
+---
+
+## 🚀 Inicio Rápido
+
+### 1. Clonar e instalar dependencias
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <URL_DEL_REPOSITORIO>
+cd azlab-website
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Variables de entorno
+Crea un archivo `.env.local`:
+```env
+NEXT_PUBLIC_API_URL=https://us-central1-azlab-9dae3.cloudfunctions.net/api
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Iniciar el servidor de desarrollo
+```bash
+pnpm dev
+```
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Stack Tecnológico
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+*   **Framework:** [Next.js 16 (App Router)](https://nextjs.org/)
+*   **Librería UI:** [React 19](https://react.dev/)
+*   **Lenguaje:** [TypeScript](https://www.typescriptlang.org/)
+*   **Estilos:** [Tailwind CSS v4](https://tailwindcss.com/)
+*   **Iconos:** [Material Symbols Outlined](https://fonts.google.com/icons)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📦 Scripts Disponibles
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+*   `pnpm dev` — Inicia el servidor de desarrollo en `http://localhost:3000`.
+*   `pnpm build` — Compila y optimiza el proyecto para producción.
+*   `pnpm start` — Inicia el servidor en modo producción.
+*   `pnpm lint` — Ejecuta ESLint para verificar calidad del código.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+© AZLAB Healthcare — Todos los derechos reservados.
