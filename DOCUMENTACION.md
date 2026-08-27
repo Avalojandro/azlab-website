@@ -27,25 +27,26 @@ Bienvenido a la documentación oficial del proyecto frontend **AZLAB Healthcare*
 **AZLAB Healthcare** es una plataforma web orientada al sector salud en El Salvador (principalmente la zona occidental: Santa Ana, Ahuachapán, Sonsonate y municipios aledaños).
 
 ### Objetivos principales:
-*   **Catálogo Digital de Exámenes:** Permitir a los pacientes explorar, buscar y filtrar más de 39 tipos de exámenes clínicos categorizados.
-*   **Servicio a Domicilio:** Facilitar la cotización y agendamiento de toma de muestras clínicas directamente en la casa u oficina del paciente.
-*   **Calculadora de Tarifas Dinámica:** Calcular costos de traslado en tiempo real según la jurisdicción y el monto del pedido (con soporte de promociones como *Envío Gratis desde $35.00*).
-*   **Conversión Rápida vía WhatsApp:** Generar órdenes con códigos únicos (`AZ-XXXXX`) y estructurar los pedidos para enviarlos en un clic al equipo de atención al cliente por WhatsApp.
+
+- **Catálogo Digital de Exámenes:** Permitir a los pacientes explorar, buscar y filtrar más de 39 tipos de exámenes clínicos categorizados.
+- **Servicio a Domicilio:** Facilitar la cotización y agendamiento de toma de muestras clínicas directamente en la casa u oficina del paciente.
+- **Calculadora de Tarifas Dinámica:** Calcular costos de traslado en tiempo real según la jurisdicción y el monto del pedido (con soporte de promociones como _Envío Gratis desde $35.00_).
+- **Conversión Rápida vía WhatsApp:** Generar órdenes con códigos únicos (`AZ-XXXXX`) y estructurar los pedidos para enviarlos en un clic al equipo de atención al cliente por WhatsApp.
 
 ---
 
 ## 🛠️ Stack Tecnológico y Dependencias
 
-| Tecnología | Versión | Propósito |
-| :--- | :--- | :--- |
-| **Next.js** | `16.1.6` (App Router) | Framework React con Server Components, optimización de fuentes y rutas modernas. |
-| **React** | `19.2.3` | Biblioteca base de componentes de interfaz de usuario. |
-| **TypeScript** | `^5.0` | Tipado estático y seguridad en tiempo de compilación. |
-| **Tailwind CSS** | `^4.0` (con `@tailwindcss/postcss`) | Sistema de diseño utilitario de última generación. |
-| **Material Symbols Outlined** | Google Fonts CDN | Iconografía médica y de navegación. |
-| **Gomarice Rockin Record** | Fuente Local `.ttf` | Tipografía personalizada para el isotipo de la marca AZLab. |
-| **Inter** | Google Fonts (`next/font/google`) | Tipografía sans-serif principal del cuerpo y encabezados. |
-| **pnpm** | `>= 8.0` | Gestor de paquetes eficiente recomendado. |
+| Tecnología                    | Versión                             | Propósito                                                                        |
+| :---------------------------- | :---------------------------------- | :------------------------------------------------------------------------------- |
+| **Next.js**                   | `16.1.6` (App Router)               | Framework React con Server Components, optimización de fuentes y rutas modernas. |
+| **React**                     | `19.2.3`                            | Biblioteca base de componentes de interfaz de usuario.                           |
+| **TypeScript**                | `^5.0`                              | Tipado estático y seguridad en tiempo de compilación.                            |
+| **Tailwind CSS**              | `^4.0` (con `@tailwindcss/postcss`) | Sistema de diseño utilitario de última generación.                               |
+| **Material Symbols Outlined** | Google Fonts CDN                    | Iconografía médica y de navegación.                                              |
+| **Gomarice Rockin Record**    | Fuente Local `.ttf`                 | Tipografía personalizada para el isotipo de la marca AZLab.                      |
+| **Inter**                     | Google Fonts (`next/font/google`)   | Tipografía sans-serif principal del cuerpo y encabezados.                        |
+| **pnpm**                      | `>= 8.0`                            | Gestor de paquetes eficiente recomendado.                                        |
 
 ---
 
@@ -109,15 +110,17 @@ azlab-website/
 ## 🏛️ Arquitectura y Principios de Diseño
 
 ### 1. Server Components vs. Client Components (Patrón Híbrido)
-*   **Server Components (`page.tsx` por defecto):**
-    *   Manejan la carga inicial de datos desde la API (`cache: "no-store"` para evitar datos obsoletos).
-    *   Mejoran el SEO, reducen el bundle enviado al navegador y facilitan el rendering rápido.
-    *   Ejemplo: `/examenes/page.tsx` recibe `searchParams`, consulta la API y pasa los productos al cliente.
-*   **Client Components (`"use client"`):**
-    *   Se utilizan para interactividad: modales, estados locales, formularios, persistencia en `localStorage` y navegación dinámica.
-    *   Ejemplo: `ExamenesClient.tsx`, `CartContext.tsx`, `ContactForm.tsx`, `/carrito/agendar/page.tsx`.
+
+- **Server Components (`page.tsx` por defecto):**
+  - Manejan la carga inicial de datos desde la API (`cache: "no-store"` para evitar datos obsoletos).
+  - Mejoran el SEO, reducen el bundle enviado al navegador y facilitan el rendering rápido.
+  - Ejemplo: `/examenes/page.tsx` recibe `searchParams`, consulta la API y pasa los productos al cliente.
+- **Client Components (`"use client"`):**
+  - Se utilizan para interactividad: modales, estados locales, formularios, persistencia en `localStorage` y navegación dinámica.
+  - Ejemplo: `ExamenesClient.tsx`, `CartContext.tsx`, `ContactForm.tsx`, `/carrito/agendar/page.tsx`.
 
 ### 2. Flujo Unidireccional de Datos
+
 ```mermaid
 graph TD
     API[Firebase REST API / Cloud Functions] -->|Fetch no-store| ServerPage[Next.js Server Page]
@@ -133,68 +136,81 @@ graph TD
 ## 🌐 Rutas y Módulos de la Aplicación
 
 ### 1. Inicio (`/`) — `src/app/page.tsx`
+
 Landing page con estructura de alta conversión:
-*   **Hero (`Hero.tsx`):** Mensaje principal, llamada a la acción para agendar y verificar exámenes.
-*   **Exámenes Populares (`PopularExams.tsx`):** Muestra los primeros 4 exámenes obtenidos desde la API.
-*   **Cómo Funciona (`HowItWorks.tsx`):** 3 pasos simples (Cotiza -> Agenda -> Recibe resultados).
-*   **Galería (`ImageCarousel.tsx`):** Muestra el equipo humano, equipos e instalaciones.
-*   **Reseñas (`Reviews.tsx`):** Calificaciones y testimonios de pacientes.
-*   **Preguntas Frecuentes (`Faqs.tsx`):** Acordeón interactivo con respuestas sobre ayuno, entrega de resultados y servicio a domicilio.
-*   **Contact CTA (`ContactCta.tsx`):** Banner inferior de contacto rápido.
+
+- **Hero (`Hero.tsx`):** Mensaje principal, llamada a la acción para agendar y verificar exámenes.
+- **Exámenes Populares (`PopularExams.tsx`):** Muestra los primeros 4 exámenes obtenidos desde la API.
+- **Cómo Funciona (`HowItWorks.tsx`):** 3 pasos simples (Cotiza -> Agenda -> Recibe resultados).
+- **Galería (`ImageCarousel.tsx`):** Muestra el equipo humano, equipos e instalaciones.
+- **Reseñas (`Reviews.tsx`):** Calificaciones y testimonios de pacientes.
+- **Preguntas Frecuentes (`Faqs.tsx`):** Acordeón interactivo con respuestas sobre ayuno, entrega de resultados y servicio a domicilio.
+- **Contact CTA (`ContactCta.tsx`):** Banner inferior de contacto rápido.
 
 ### 2. A Domicilio (`/a-domicilio`) — `src/app/a-domicilio/page.tsx`
+
 Página dedicada a detallar el servicio de toma de muestras a domicilio:
-*   Ventajas clave: amplia cobertura, horarios flexibles (desde 6:00 AM para ayuno) y métodos de pago (efectivo, transferencia o tarjeta).
-*   Llamado directo a la página de `/cobertura`.
+
+- Ventajas clave: amplia cobertura, horarios flexibles (desde 6:00 AM para ayuno) y métodos de pago (efectivo, transferencia o tarjeta).
+- Llamado directo a la página de `/cobertura`.
 
 ### 3. Cobertura (`/cobertura`) — `src/app/cobertura/page.tsx`
+
 Directorio exhaustivo de zonas de cobertura:
-*   Muestra las 5 jurisdicciones principales.
-*   Presenta tarjetas por cada uno de los 21 distritos con su **tiempo estimado de traslado** y **tarifa de servicio**.
-*   Indica visualmente las promociones activas (badge de *Servicio GRATIS en compras mayores a $35.00* para Santa Ana Centro).
+
+- Muestra las 5 jurisdicciones principales.
+- Presenta tarjetas por cada uno de los 21 distritos con su **tiempo estimado de traslado** y **tarifa de servicio**.
+- Indica visualmente las promociones activas (badge de _Servicio GRATIS en compras mayores a $35.00_ para Santa Ana Centro).
 
 ### 4. Catálogo de Exámenes (`/examenes`) — `src/app/examenes/`
-*   **`page.tsx` (Server):** Lee `searchParams` (`page`, `category`, `cursor`, `search`), llama a `getProducts()` y calcula la paginación.
-*   **`ExamenesClient.tsx` (Client):**
-    *   **Buscador en tiempo real:** Filtra por nombre o código del examen.
-    *   **15 Categorías médicas:** Pestañas con iconos temáticos (Química Sanguínea, Hematología, Ureanálisis, Hormonas, Perfiles/Paquetes, etc.).
-    *   **Paginación:** Navegación por páginas o cursores.
-    *   **Modal de Detalle (`ProductModal`):** Muestra descripción completa, precio, código interno y selector de cantidad (1 a 5 unidades) con botón "Agregar al Carrito".
+
+- **`page.tsx` (Server):** Lee `searchParams` (`page`, `category`, `cursor`, `search`), llama a `getProducts()` y calcula la paginación.
+- **`ExamenesClient.tsx` (Client):**
+  - **Buscador en tiempo real:** Filtra por nombre o código del examen.
+  - **15 Categorías médicas:** Pestañas con iconos temáticos (Química Sanguínea, Hematología, Ureanálisis, Hormonas, Perfiles/Paquetes, etc.).
+  - **Paginación:** Navegación por páginas o cursores.
+  - **Modal de Detalle (`ProductModal`):** Muestra descripción completa, precio, código interno y selector de cantidad (1 a 5 unidades) con botón "Agregar al Carrito".
 
 ### 5. Carrito de Compras (`/carrito`) — `src/app/carrito/page.tsx`
-*   Lista todos los exámenes añadidos con su icono, nombre, categoría y precio.
-*   Permite incrementar, disminuir (máx. 5 por examen) o eliminar ítems.
-*   Calcula el subtotal acumulado.
-*   Si está vacío, muestra un estado amigable con botón para ir al catálogo.
-*   Botón directo para avanzar al Wizard de Agendamiento.
+
+- Lista todos los exámenes añadidos con su icono, nombre, categoría y precio.
+- Permite incrementar, disminuir (máx. 5 por examen) o eliminar ítems.
+- Calcula el subtotal acumulado.
+- Si está vacío, muestra un estado amigable con botón para ir al catálogo.
+- Botón directo para avanzar al Wizard de Agendamiento.
 
 ### 6. Agendamiento de Citas / Checkout (`/carrito/agendar`) — `src/app/carrito/agendar/page.tsx`
+
 Wizard de 2 pasos para concretar la cita:
-*   **Paso 1 (Datos de Ubicación y Contacto):**
-    *   Nombre completo del paciente.
-    *   Número de teléfono (mínimo 8 dígitos).
-    *   Selector de Municipio/Distrito (con búsqueda y agrupación por jurisdicción).
-    *   Dirección exacta (calle, número de casa, colonia, punto de referencia).
-    *   Instrucciones o notas adicionales.
-*   **Paso 2 (Confirmación y Resumen del Pedido):**
-    *   Resumen detallado de los exámenes solicitados.
-    *   Cálculo en vivo de la tarifa de envío según el distrito seleccionado.
-    *   Indicador de "Faltan $X.XX para envío gratis" si aplica al distrito.
-    *   Generación automática de un **Código de Pedido Único** (ej: `AZ-84920K`).
-    *   Botón para copiar el código de pedido al portapapeles.
-    *   Botón **"Confirmar y Enviar por WhatsApp"**: Abre WhatsApp Web / App con un mensaje perfectamente formateado con los datos del paciente, dirección, lista de exámenes, código de orden y total a pagar.
+
+- **Paso 1 (Datos de Ubicación y Contacto):**
+  - Nombre completo del paciente.
+  - Número de teléfono (mínimo 8 dígitos).
+  - Selector de Municipio/Distrito (con búsqueda y agrupación por jurisdicción).
+  - Dirección exacta (calle, número de casa, colonia, punto de referencia).
+  - Instrucciones o notas adicionales.
+- **Paso 2 (Confirmación y Resumen del Pedido):**
+  - Resumen detallado de los exámenes solicitados.
+  - Cálculo en vivo de la tarifa de envío según el distrito seleccionado.
+  - Indicador de "Faltan $X.XX para envío gratis" si aplica al distrito.
+  - Generación automática de un **Código de Pedido Único** (ej: `AZ-84920K`).
+  - Botón para copiar el código de pedido al portapapeles.
+  - Botón **"Confirmar y Enviar por WhatsApp"**: Abre WhatsApp Web / App con un mensaje perfectamente formateado con los datos del paciente, dirección, lista de exámenes, código de orden y total a pagar.
 
 ### 7. Contacto (`/contacto`) — `src/app/contacto/page.tsx`
-*   Información general: Teléfono (`+503 6956-5468`), Correo (`info@azlabhealthcare.com`), Dirección física y Horario (`Lun - Sáb: 6:00 AM - 4:00 PM`).
-*   Formulario interactivo (`ContactForm.tsx`) con validación de campos que envía la consulta directamente por WhatsApp.
+
+- Información general: Teléfono (`+503 6956-5468`), Correo (`laboratoriosazlab@gmail.com`), Dirección física y Horario (`Lun - Sáb: 6:00 AM - 4:00 PM`).
+- Formulario interactivo (`ContactForm.tsx`) con validación de campos que envía la consulta directamente por WhatsApp.
 
 ### 8. Políticas y Privacidad (`/politicas`) — `src/app/politicas/page.tsx`
+
 Página interactiva con navegación por pestañas y acordeón para normativas legales y médicas:
-1.  *Términos y Condiciones de Uso*
-2.  *Política de Privacidad y Tratamiento de Datos Personales*
-3.  *Consentimiento Informado para Toma de Muestras*
-4.  *Políticas de Cancelación, Reagendamiento y Reembolsos*
-5.  *Protocolos de Bioseguridad y Calidad*
+
+1.  _Términos y Condiciones de Uso_
+2.  _Política de Privacidad y Tratamiento de Datos Personales_
+3.  _Consentimiento Informado para Toma de Muestras_
+4.  _Políticas de Cancelación, Reagendamiento y Reembolsos_
+5.  _Protocolos de Bioseguridad y Calidad_
 
 ---
 
@@ -221,9 +237,10 @@ interface CartContextType {
 ```
 
 ### Características de implementación:
-*   **Persistencia:** Se sincroniza automáticamente con el `localStorage` del navegador bajo la clave `azlab_cart`.
-*   **Seguridad SSR:** Inicialización segura que comprueba si `typeof window !== "undefined"` para evitar errores de hidratación.
-*   **Límites de negocio:** Restringe la cantidad por examen entre 1 y 5 unidades para prevenir pedidos anómalos.
+
+- **Persistencia:** Se sincroniza automáticamente con el `localStorage` del navegador bajo la clave `azlab_cart`.
+- **Seguridad SSR:** Inicialización segura que comprueba si `typeof window !== "undefined"` para evitar errores de hidratación.
+- **Límites de negocio:** Restringe la cantidad por examen entre 1 y 5 unidades para prevenir pedidos anómalos.
 
 ---
 
@@ -232,25 +249,28 @@ interface CartContextType {
 Toda la lógica de geolocalización y costos de traslado reside en `src/data/locations.ts`.
 
 ### Modelo de Datos:
+
 ```typescript
 export interface DeliveryDistrict {
-  id: string;             // Identificador único (ej: "sa-centro-el-palmar")
-  jurisdiccion: string;   // Jurisdicción principal
-  distrito: string;       // Nombre del distrito / colonia
-  approxTimeMin: number;  // Tiempo estimado de traslado en minutos
-  fee: number;            // Tarifa base en USD
+  id: string; // Identificador único (ej: "sa-centro-el-palmar")
+  jurisdiccion: string; // Jurisdicción principal
+  distrito: string; // Nombre del distrito / colonia
+  approxTimeMin: number; // Tiempo estimado de traslado en minutos
+  fee: number; // Tarifa base en USD
   freeThreshold?: number; // Monto mínimo en exámenes para delivery gratis (ej: $35.00)
 }
 ```
 
 ### Jurisdicciones Soportadas:
-1.  **Santa Ana Centro:** 11 distritos (Centro, El Ivu, El Trébol, San Miguelito, El Palmar, El Colón, Jardines de Tecana, Lamatepec, Cutumay Camones, Santa Leonor, Zona Calle Vieja). Tarifa $2.00 a $3.00. **Envío gratis en compras $\ge$ $35.00**.
+
+1.  **Santa Ana Centro:** 11 distritos (Centro, El Ivu, El Trébol, San Miguelito, El Palmar, El Colón, Jardines de Tecana, Lamatepec, Cutumay Camones, Santa Leonor, Zona Calle Vieja). Tarifa $2.00 a $3.00. **Envío gratis en compras $\ge$ $35.00\*\*.
 2.  **Santa Ana Norte:** 5 distritos (Santa Ana Norte, Masahuat, Metapán, Santa Rosa Guachipilín, Texistepeque). Tarifa $3.50 a $15.00.
 3.  **Santa Ana Oeste:** 6 distritos (Candelaria de La Frontera, Chalchuapa, El Porvenir, San Antonio Pajonal, San Sebastián Salitrillo, Santiago de La Frontera). Tarifa $3.50 a $10.00.
 4.  **Santa Ana Este:** 2 distritos (Coatepeque, El Congo). Tarifa $5.00 a $6.00.
 5.  **Otros Departamentos de Occidente:** Ahuachapán Centro ($10.00), Sonsonate Centro ($15.00).
 
 ### Función de Cálculo (`calculateDeliveryFee`):
+
 ```typescript
 const result = calculateDeliveryFee(selectedDistrict, subtotal);
 // Retorna: { fee: number, isFree: boolean, baseFee: number, remainingForFree: number }
@@ -263,32 +283,37 @@ const result = calculateDeliveryFee(selectedDistrict, subtotal);
 El archivo `services/api.ts` es el único punto de contacto con el servicio de datos.
 
 ### Variables de Configuración:
-*   URL por defecto (Producción): `https://us-central1-azlab-9dae3.cloudfunctions.net/api`
-*   Variable en `.env.local`: `NEXT_PUBLIC_API_URL`
+
+- URL por defecto (Producción): `https://us-central1-azlab-9dae3.cloudfunctions.net/api`
+- Variable en `.env.local`: `NEXT_PUBLIC_API_URL`
 
 ### Funciones Principales:
 
 #### 1. `getProducts(page, limit, category?, cursor?, search?)`
+
 Consulta el catálogo de exámenes con soporte para filtros combinados:
-*   **Cache:** `cache: "no-store"` para asegurar disponibilidad y precios actualizados en tiempo real.
-*   **Búsqueda:** Añade parámetro `&search=` si se especifica un término.
-*   **Categoría y Cursor:** Si se filtra por categoría, utiliza cursores (`&cursor=`) para la paginación eficiente de Firestore.
-*   **Respuesta:** Retorna `{ ok: boolean, data: Product[], pagination: { hasMore, nextCursor, ... } }`.
+
+- **Cache:** `cache: "no-store"` para asegurar disponibilidad y precios actualizados en tiempo real.
+- **Búsqueda:** Añade parámetro `&search=` si se especifica un término.
+- **Categoría y Cursor:** Si se filtra por categoría, utiliza cursores (`&cursor=`) para la paginación eficiente de Firestore.
+- **Respuesta:** Retorna `{ ok: boolean, data: Product[], pagination: { hasMore, nextCursor, ... } }`.
 
 #### 2. `getProductById(id: string)`
+
 Obtiene un producto puntual por su código identificador (ej: `"AZ01"`).
 
 ### Estructura de un Producto (`Product`):
+
 ```typescript
 export interface Product {
-  id: string;          // Mismo que el código (ej: "AZ01")
-  code: string;        // Código interno
-  name: string;        // Nombre del examen médico
-  category: string;    // Categoría oficial
+  id: string; // Mismo que el código (ej: "AZ01")
+  code: string; // Código interno
+  name: string; // Nombre del examen médico
+  category: string; // Categoría oficial
   description: string; // Explicación médica y preparación requerida
-  price: number;       // Precio en USD
-  currency: string;    // "USD"
-  active: boolean;     // Estado de disponibilidad
+  price: number; // Precio en USD
+  currency: string; // "USD"
+  active: boolean; // Estado de disponibilidad
 }
 ```
 
@@ -299,20 +324,21 @@ export interface Product {
 En lugar de requerir una pasarela de pago obligatoria que añada fricción al paciente, AZLab utiliza un sistema híbrido de agendamiento rápido con confirmación directa:
 
 ```text
-[Selección en Catálogo] 
+[Selección en Catálogo]
         ⬇️
-[Revisión en Carrito] 
+[Revisión en Carrito]
         ⬇️
-[Paso 1: Datos de Contacto + Distrito] 
+[Paso 1: Datos de Contacto + Distrito]
         ⬇️
-[Paso 2: Cálculo de Envío + Generación de Código AZ-XXXXX] 
+[Paso 2: Cálculo de Envío + Generación de Código AZ-XXXXX]
         ⬇️
-[Redirección con Mensaje Estructurado a WhatsApp (+503 6956-5468)] 
+[Redirección con Mensaje Estructurado a WhatsApp (+503 6956-5468)]
         ⬇️
 [Atención y Confirmación con el Personal Clínico]
 ```
 
 ### Ejemplo de Mensaje Generado Automáticamente:
+
 ```text
 *SOLICITUD DE CITA / PEDIDO - AZ LAB*
 *Código de Pedido:* AZ-58291M
@@ -341,21 +367,25 @@ En lugar de requerir una pasarela de pago obligatoria que añada fricción al pa
 El proyecto utiliza **Tailwind CSS versión 4**. Los tokens de la marca están declarados en `src/app/globals.css` mediante la directiva `@theme`:
 
 ### 1. Paleta de Colores de la Marca:
-*   **AzLab Blue (`--color-azlab-blue-*`):**
-    *   Base: `#202b52` (`azlab-blue-500`)
-    *   Escala: `50` (`#eef0f6`) hasta `900` (`#070a16`)
-    *   Uso: Encabezados, textos oscuros, fondos institucionales y botones secundarios.
-*   **AzLab Green (`--color-azlab-green-*`):**
-    *   Base: `#2AA737` (`azlab-green-500`)
-    *   Escala: `50` (`#edf9ef`) hasta `900` (`#09220b`)
-    *   Uso: Botones principales (CTAs), badges de éxito, promociones y acentos de marca.
+
+- **AzLab Blue (`--color-azlab-blue-*`):**
+  - Base: `#202b52` (`azlab-blue-500`)
+  - Escala: `50` (`#eef0f6`) hasta `900` (`#070a16`)
+  - Uso: Encabezados, textos oscuros, fondos institucionales y botones secundarios.
+- **AzLab Green (`--color-azlab-green-*`):**
+  - Base: `#2AA737` (`azlab-green-500`)
+  - Escala: `50` (`#edf9ef`) hasta `900` (`#09220b`)
+  - Uso: Botones principales (CTAs), badges de éxito, promociones y acentos de marca.
 
 ### 2. Tipografías:
-*   **Sans General:** `Inter` (cargada con `next/font/google`).
-*   **Logo Font:** `font-rockin` (definida como utility apuntando a `gomarice_rockin_record.ttf`).
+
+- **Sans General:** `Inter` (cargada con `next/font/google`).
+- **Logo Font:** `font-rockin` (definida como utility apuntando a `gomarice_rockin_record.ttf`).
 
 ### 3. Iconos (Material Symbols Outlined):
+
 Para insertar iconos en cualquier componente:
+
 ```tsx
 <span className="material-symbols-outlined text-azlab-green-500 text-xl">
   biotech
@@ -367,11 +397,13 @@ Para insertar iconos en cualquier componente:
 ## 💻 Guía de Configuración y Desarrollo Local
 
 ### 1. Prerrequisitos
-*   **Node.js:** Versión 20 o superior.
-*   **pnpm:** Recomendado (`npm install -g pnpm`).
-*   **Java JDK (Opcional):** Versión 11+ si deseas correr los emuladores locales de Firestore.
+
+- **Node.js:** Versión 20 o superior.
+- **pnpm:** Recomendado (`npm install -g pnpm`).
+- **Java JDK (Opcional):** Versión 11+ si deseas correr los emuladores locales de Firestore.
 
 ### 2. Instalación de Dependencias
+
 ```bash
 git clone <URL_DEL_REPOSITORIO>
 cd azlab-website
@@ -379,6 +411,7 @@ pnpm install
 ```
 
 ### 3. Configuración de Variables de Entorno
+
 Crea un archivo `.env.local` en la raíz del proyecto:
 
 ```env
@@ -390,25 +423,28 @@ NEXT_PUBLIC_API_URL=https://us-central1-azlab-9dae3.cloudfunctions.net/api
 ```
 
 ### 4. Ejecución del Servidor de Desarrollo
+
 ```bash
 pnpm dev
 ```
+
 Abre tu navegador en [http://localhost:3000](http://localhost:3000).
 
 ### 5. Scripts Disponibles en `package.json`
 
-| Comando | Descripción |
-| :--- | :--- |
-| `pnpm dev` | Inicia el servidor de desarrollo en modo hot-reload (`localhost:3000`). |
-| `pnpm build` | Compila la aplicación y optimiza el bundle para producción. |
-| `pnpm start` | Inicia el servidor en modo producción a partir del build generado. |
-| `pnpm lint` | Ejecuta ESLint 9 para validar sintaxis y buenas prácticas. |
+| Comando      | Descripción                                                             |
+| :----------- | :---------------------------------------------------------------------- |
+| `pnpm dev`   | Inicia el servidor de desarrollo en modo hot-reload (`localhost:3000`). |
+| `pnpm build` | Compila la aplicación y optimiza el bundle para producción.             |
+| `pnpm start` | Inicia el servidor en modo producción a partir del build generado.      |
+| `pnpm lint`  | Ejecuta ESLint 9 para validar sintaxis y buenas prácticas.              |
 
 ---
 
 ## 🚀 Guía para Desarrolladores: Cómo Extender el Proyecto
 
 ### 1. ¿Cómo agregar una nueva zona o distrito de cobertura?
+
 1. Abre `src/data/locations.ts`.
 2. Si es una nueva jurisdicción, agrégala al array `JURISDICCIONES`.
 3. Añade el nuevo objeto al array `DELIVERY_LOCATIONS`:
@@ -425,11 +461,13 @@ Abre tu navegador en [http://localhost:3000](http://localhost:3000).
 4. Automáticamente la página `/cobertura` y el selector de `/carrito/agendar` reflejarán el nuevo distrito y sus cálculos.
 
 ### 2. ¿Cómo agregar o modificar una categoría de exámenes?
+
 1. Abre `src/app/examenes/ExamenesClient.tsx`.
 2. Añade la categoría en el array `ALL_CATEGORIES`.
 3. Asigna un icono de Material Symbols en la función `handleCategoryIcon(category)`.
 
 ### 3. ¿Cómo crear un nuevo componente visual?
+
 1. Crea tu archivo en `src/components/MiComponente.tsx`.
 2. Aplica las clases de Tailwind utilizando los colores semánticos (`azlab-blue-*` y `azlab-green-*`).
 3. Importa y utiliza el componente en la página correspondiente.
@@ -442,7 +480,7 @@ El proyecto está 100% preparado para ser desplegado en plataformas como **Verce
 
 1. Conecta el repositorio de GitHub con tu plataforma de hosting (Vercel recomendado para Next.js).
 2. Configura la variable de entorno en el panel de control:
-   *   `NEXT_PUBLIC_API_URL`: `https://us-central1-azlab-9dae3.cloudfunctions.net/api`
+   - `NEXT_PUBLIC_API_URL`: `https://us-central1-azlab-9dae3.cloudfunctions.net/api`
 3. Comando de Build: `pnpm build` (o `next build`).
 4. Directorio de salida: `.next`.
 
@@ -450,11 +488,11 @@ El proyecto está 100% preparado para ser desplegado en plataformas como **Verce
 
 ## 📞 Canales y Soporte Técnico
 
-*   **Entorno de Pruebas / Backend Repositorio:** `azalab-backend-firebase`
-*   **Teléfono / WhatsApp de Soporte:** `+503 6956-5468`
-*   **Correo Electrónico:** `info@azlabhealthcare.com`
-*   **Ubicación Principal:** 8va Avenida Sur, Entre 23 y 25 Calle Poniente, #2, Santa Ana, El Salvador.
+- **Entorno de Pruebas / Backend Repositorio:** `azalab-backend-firebase`
+- **Teléfono / WhatsApp de Soporte:** `+503 6956-5468`
+- **Correo Electrónico:** `laboratoriosazlab@gmail.com`
+- **Ubicación Principal:** 8va Avenida Sur, Entre 23 y 25 Calle Poniente, #2, Santa Ana, El Salvador.
 
 ---
 
-*Documentación generada y mantenida para el equipo de desarrollo de AZLAB Healthcare.*
+_Documentación generada y mantenida para el equipo de desarrollo de AZLAB Healthcare._

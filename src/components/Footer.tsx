@@ -102,8 +102,8 @@ const Footer: React.FC = () => {
                   mail
                 </span>
                 <span>
-                  {/* info@azlabhealthcare.com */}
-                  info@azlabhealthcare.com
+                  {/* laboratoriosazlab@gmail.com */}
+                  laboratoriosazlab@gmail.com
                 </span>
               </li>
               <li className="flex items-start gap-2 text-sm text-gray-600">

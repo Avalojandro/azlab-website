@@ -55,8 +55,7 @@ export default function ContactoPage() {
               <div>
                 <p className="text-sm text-gray-500 mb-1">Correo</p>
                 <p className="font-semibold text-azlab-blue-500">
-                  {/* info@azlabhealthcare.com */}
-                  info@azlabhealthcare.com
+                  laboratoriosazlab@gmail.com
                 </p>
               </div>
             </div>

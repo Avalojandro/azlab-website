@@ -24,8 +24,8 @@ const ContactCta: React.FC = () => {
               <div className="flex items-center gap-3 text-white">
                 <span className="material-symbols-outlined">mail</span>
                 <span className="font-medium">
-                  {/* info@azlabhealthcare.com */}
-                  info@azlabhealthcare.com
+                  {/* laboratoriosazlab@gmail.com */}
+                  laboratoriosazlab@gmail.com
                 </span>
               </div>
 
